@@ -1,0 +1,18 @@
+{
+  "name": "uc-2018-customizing-widgets",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "tsc"
+  },
+  "dependencies": {
+    "highlightjs": "^9.10.0",
+    "reveal.js": "^3.5.0"
+  },
+  "devDependencies": {
+    "dojo-typings": "^1.11.7",
+    "grunt": "~1.0.2",
+    "grunt-sass": "~2.1.0",
+    "typescript": "^2.7.2"
+  }
+}

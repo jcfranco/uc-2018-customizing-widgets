@@ -45,6 +45,8 @@
 
 <h2 class="eight-bit">Theming</h2>
 
+<!-- .slide: data-background="img/bg-4.png" -->
+
 ---
 
 # Level I: Theming
@@ -239,6 +241,8 @@ $button_text_color     : #ffbaaa; // luigi
 
 # So let's make a theme!
 
+<!-- .slide: data-background="img/bg-5.png" -->
+
 ---
 
 # Level I: Theming Recap
@@ -259,6 +263,8 @@ $button_text_color     : #ffbaaa; // luigi
 
 <h2 class="eight-bit">Ready?</h2>
 
+<!-- .slide: data-background="img/bg-4.png" -->
+
 ---
 
 <!-- LEVEL UP B -->
@@ -267,6 +273,8 @@ $button_text_color     : #ffbaaa; // luigi
 ![Level 2](./img/8bit/JSAPI-8bit_Level-2.png)
 
 <h2 class="eight-bit">Views</h2>
+
+<!-- .slide: data-background="img/bg-4.png" -->
 
 ---
 
@@ -333,7 +341,7 @@ Create a custom Attribution Table view
 
 [![Level 2 demo](img/level2demo.png)](https://jcfranco.github.io/uc-2018-customizing-widgets/demos/custom-attribution-complete/)
 
-<!-- .slide: data-background="img/bg-2.png" -->
+<!-- .slide: data-background="img/bg-5.png" -->
 
 ---
 
@@ -355,6 +363,8 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 
 <h2 class="eight-bit">Ready?</h2>
 
+<!-- .slide: data-background="img/bg-4.png" -->
+
 ---
 
 <!-- LEVEL UP B -->
@@ -363,6 +373,8 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 ![Level 3](./img/8bit/JSAPI-8bit_Level-3.png)
 
 <h2 class="eight-bit">Extending a View</h2>
+
+<!-- .slide: data-background="img/bg-4.png" -->
 
 ---
 
@@ -424,7 +436,7 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 
 <img src="img/demo-extending-view.png" width="50%"/>
 
-<!-- .slide: data-background="img/bg-2.png" -->
+<!-- .slide: data-background="img/bg-5.png" -->
 
 ---
 
@@ -447,6 +459,8 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 
 <h2 class="eight-bit">Ready?</h2>
 
+<!-- .slide: data-background="img/bg-4.png" -->
+
 ---
 
 <!-- LEVEL UP B -->
@@ -455,6 +469,8 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 ![Level 4](./img/8bit/JSAPI-8bit_Level-4-ani.gif)
 
 <h2 class="eight-bit">Put it all together.</h2>
+
+<!-- .slide: data-background="img/bg-4.png" -->
 
 ---
 
@@ -476,7 +492,7 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 ---
 
 <!-- **please rate us** -->
-<!-- .slide: data-background="img/ds18-survey.png" -->
+<!-- .slide: data-background="img/uc18-survey.png" -->
 
 ---
 
@@ -490,7 +506,5 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 
 ---
 
-<!-- .slide: data-background="img/bg-final.jpg" -->
-
-![Thank You](img/thanks.gif)
+<!-- .slide: data-background="img/bg-final.png" -->
 

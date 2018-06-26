@@ -430,9 +430,9 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 
 # Demo: Extending a View
 
-[Demo](https://jcfranco.github.io/uc-2018-customizing-widgets/demos/custombasemapgallery-end/)
+[Demo](https://jcfranco.github.io/uc-2018-customizing-widgets/demos/custom-bookmarks-end/)
 |
-[Steps](https://github.com/jcfranco/uc-2018-customizing-widgets/blob/master/demos/custombasemapgallery-start/STEPS.md)
+[Steps](https://github.com/jcfranco/uc-2018-customizing-widgets/blob/master/demos/custom-bookmarks-start/STEPS.md)
 
 <img src="img/demo-extending-view.png" width="50%"/>
 

@@ -126,8 +126,7 @@ class MarioLocate extends declared(Widget) {
   render() {
     const { state } = this.viewModel;
 
-    const imgSrc =
-      state === "locating" ? "./img/warp.gif" : "./img/mario-head.png";
+    const imgSrc = state === "locating" ? "./img/warp.gif" : "./img/locate.png";
 
     return (
       <div

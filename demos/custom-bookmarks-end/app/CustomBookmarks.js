@@ -48,7 +48,6 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         //
         //--------------------------------------------------------------------------
         CustomBookmarks.prototype._renderBookmark = function (bookmark) {
-            var _a, _b;
             var active = bookmark.active, name = bookmark.name, thumbnail = bookmark.thumbnail;
             var bookmarkClasses = (_a = {},
                 _a[CSS.bookmarkActive] = active,
@@ -62,6 +61,7 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             return (widget_1.tsx("li", { bind: this, "data-bookmark-item": bookmark, class: this.classes(CSS.bookmark, bookmarkClasses), onclick: this._goToBookmark, onkeydown: this._goToBookmark, tabIndex: 0, role: "button", title: i18n.goToBookmark, "aria-label": name },
                 imageNode,
                 widget_1.tsx("span", { class: CSS.bookmarkName }, name)));
+            var _a, _b;
         };
         CustomBookmarks.prototype._goToBookmark = function (event) {
             var node = event.currentTarget;

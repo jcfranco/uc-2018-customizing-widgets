@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+
+  <script>
+    var href = location.href;
+    var demoLocation = href.slice(0, href.lastIndexOf("/"));
+    var dojoConfig = {
+      //locale: "es",
+      packages: [{
+        name: "demo",
+        location: demoLocation + "/app"
+      }]
+    };
+
+  </script>
+
+  <script src="https://js.arcgis.com/4.8/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+
+  <script>
+    require([
+      "esri/WebMap",
+      "esri/views/MapView",
+      "demo/MarioLocate",
+      "dojo/domReady!"
+    ], function (
+      WebMap,
+      MapView,
+      MarioLocate
+    ) {
+
+        var map = new WebMap({
+          portalItem: {
+            id: "6c8b02c8d9d843318de65688f55ecc48"
+          }
+        });
+
+        var view = new MapView({
+          container: "viewDiv",
+          map: map
+        });
+
+        var locate = new MarioLocate({
+          view: view
+        });
+
+        view.ui.add(locate, "top-left");
+
+      });
+
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>

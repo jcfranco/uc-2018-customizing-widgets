@@ -1,0 +1,7 @@
+.demo-mario-locate {
+  box-shadow: none;
+  cursor: pointer;
+}
+.demo-mario-locate:hover img {
+  filter: brightness(75%);
+}

@@ -1,7 +1,13 @@
 .demo-mario-locate {
-  box-shadow: none;
+  box-shadow: none !important;
   cursor: pointer;
 }
-.demo-mario-locate:hover img {
+
+.demo-mario-locate__image {
+  width: 32px;
+  height: 32px;
+}
+
+.demo-mario-locate__image:hover {
   filter: brightness(75%);
 }

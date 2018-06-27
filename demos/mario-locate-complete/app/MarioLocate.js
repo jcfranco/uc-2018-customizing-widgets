@@ -19,7 +19,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/core/tsSupport/decorateHelper", "dojo/i18n!./nls/MarioLocate", "esri/Graphic", "esri/core/watchUtils", "esri/core/accessorSupport/decorators", "esri/widgets/Widget", "esri/widgets/Locate/LocateViewModel", "esri/widgets/support/widget"], function (require, exports, __extends, __decorate, i18n, Graphic, watchUtils, decorators_1, Widget, LocateViewModel, widget_1) {
     "use strict";
     var CSS = {
-        base: "demo-mario-locate"
+        base: "demo-mario-locate",
+        image: "demo-mario-locate__image"
     };
     var MarioLocate = /** @class */ (function (_super) {
         __extends(MarioLocate, _super);
@@ -36,10 +37,6 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             //
             //--------------------------------------------------------------------------
             //----------------------------------
-            //  label
-            //----------------------------------
-            _this.label = i18n.widgetLabel;
-            //----------------------------------
             //  scale
             //----------------------------------
             _this.scale = null;
@@ -53,8 +50,8 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             _this.viewModel = new LocateViewModel();
             _this.viewModel.graphic = new Graphic({
                 popupTemplate: {
-                    title: "Mario",
-                    content: '<iframe width="200" height="150" src="https://www.youtube.com/embed/T_xZ7yXiFws?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
+                    title: "It's-a me, Mario!",
+                    content: '<iframe width="auto" height="150" src="https://www.youtube.com/embed/T_xZ7yXiFws?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
                 },
                 symbol: {
                     type: "picture-marker",
@@ -67,9 +64,11 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         }
         MarioLocate.prototype.postInitialize = function () {
             this.own(watchUtils.watch(this, "viewModel.state", function (state, oldState) {
-                var soundUrl = state === "locating"
+                var playNewScreenSound = state === "ready" && oldState === "locating";
+                var playWarpSound = state === "locating";
+                var soundUrl = playWarpSound
                     ? "./wav/warp.wav"
-                    : state === "ready" && oldState === "locating"
+                    : playNewScreenSound
                         ? "./wav/newscreen.wav"
                         : null;
                 if (soundUrl) {
@@ -86,8 +85,8 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         MarioLocate.prototype.render = function () {
             var state = this.viewModel.state;
             var imgSrc = state === "locating" ? "./img/warp.gif" : "./img/locate.png";
-            return (widget_1.tsx("div", { class: CSS.base, bind: this, hidden: state === "feature-unsupported", onclick: this._locate, onkeydown: this._locate, role: "button", tabIndex: 0, "aria-label": i18n.title, title: i18n.title, style: "box-shadow:none" },
-                widget_1.tsx("img", { width: "32", src: require.toUrl(imgSrc) })));
+            return (widget_1.tsx("div", { class: CSS.base, bind: this, hidden: state === "feature-unsupported", onclick: this._locate, onkeydown: this._locate, role: "button", tabIndex: 0, "aria-label": i18n.title },
+                widget_1.tsx("img", { alt: i18n.title, class: CSS.image, src: require.toUrl(imgSrc) })));
         };
         //--------------------------------------------------------------------------
         //
@@ -97,9 +96,6 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         MarioLocate.prototype._locate = function () {
             this.locate();
         };
-        __decorate([
-            decorators_1.property()
-        ], MarioLocate.prototype, "label", void 0);
         __decorate([
             decorators_1.aliasOf("viewModel.scale")
         ], MarioLocate.prototype, "scale", void 0);

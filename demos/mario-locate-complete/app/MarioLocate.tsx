@@ -7,6 +7,7 @@ import * as i18n from "dojo/i18n!./nls/MarioLocate";
 // esri
 import Graphic = require("esri/Graphic");
 
+// esri.core
 import watchUtils = require("esri/core/watchUtils");
 
 // esri.core.accessorSupport
@@ -26,6 +27,7 @@ import Widget = require("esri/widgets/Widget");
 // esri.widgets.Locate
 import LocateViewModel = require("esri/widgets/Locate/LocateViewModel");
 
+// esri.widgets.support
 import {
   accessibleHandler,
   tsx,
@@ -34,7 +36,8 @@ import {
 } from "esri/widgets/support/widget";
 
 const CSS = {
-  base: "demo-mario-locate"
+  base: "demo-mario-locate",
+  image: "demo-mario-locate__image"
 };
 
 @subclass("demo.MarioLocate")
@@ -50,9 +53,9 @@ class MarioLocate extends declared(Widget) {
 
     this.viewModel.graphic = new Graphic({
       popupTemplate: {
-        title: "Mario",
+        title: "It's-a me, Mario!",
         content:
-          '<iframe width="200" height="150" src="https://www.youtube.com/embed/T_xZ7yXiFws?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
+          '<iframe width="auto" height="150" src="https://www.youtube.com/embed/T_xZ7yXiFws?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
       },
       symbol: {
         type: "picture-marker",
@@ -66,12 +69,14 @@ class MarioLocate extends declared(Widget) {
   postInitialize() {
     this.own(
       watchUtils.watch(this, "viewModel.state", (state, oldState) => {
-        const soundUrl =
-          state === "locating"
-            ? "./wav/warp.wav"
-            : state === "ready" && oldState === "locating"
-              ? "./wav/newscreen.wav"
-              : null;
+        const playNewScreenSound = state === "ready" && oldState === "locating";
+        const playWarpSound = state === "locating";
+
+        const soundUrl = playWarpSound
+          ? "./wav/warp.wav"
+          : playNewScreenSound
+            ? "./wav/newscreen.wav"
+            : null;
 
         if (soundUrl) {
           new Audio(require.toUrl(soundUrl)).play();
@@ -85,12 +90,6 @@ class MarioLocate extends declared(Widget) {
   //  Properties
   //
   //--------------------------------------------------------------------------
-
-  //----------------------------------
-  //  label
-  //----------------------------------
-
-  @property() label: string = i18n.widgetLabel;
 
   //----------------------------------
   //  scale
@@ -139,9 +138,8 @@ class MarioLocate extends declared(Widget) {
         role="button"
         tabIndex={0}
         aria-label={i18n.title}
-        title={i18n.title}
       >
-        <img width="32" src={require.toUrl(imgSrc)} />
+        <img alt={i18n.title} class={CSS.image} src={require.toUrl(imgSrc)} />
       </div>
     );
   }

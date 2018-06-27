@@ -139,6 +139,7 @@ class MarioLocate extends declared(Widget) {
         tabIndex={0}
         aria-label={i18n.title}
         title={i18n.title}
+        style="box-shadow:none"
       >
         <img width="32" src={require.toUrl(imgSrc)} />
       </div>

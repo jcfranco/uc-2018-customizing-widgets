@@ -86,7 +86,7 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         MarioLocate.prototype.render = function () {
             var state = this.viewModel.state;
             var imgSrc = state === "locating" ? "./img/warp.gif" : "./img/locate.png";
-            return (widget_1.tsx("div", { class: CSS.base, bind: this, hidden: state === "feature-unsupported", onclick: this._locate, onkeydown: this._locate, role: "button", tabIndex: 0, "aria-label": i18n.title, title: i18n.title },
+            return (widget_1.tsx("div", { class: CSS.base, bind: this, hidden: state === "feature-unsupported", onclick: this._locate, onkeydown: this._locate, role: "button", tabIndex: 0, "aria-label": i18n.title, title: i18n.title, style: "box-shadow:none" },
                 widget_1.tsx("img", { width: "32", src: require.toUrl(imgSrc) })));
         };
         //--------------------------------------------------------------------------

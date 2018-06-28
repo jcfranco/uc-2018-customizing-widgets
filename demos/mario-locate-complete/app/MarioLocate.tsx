@@ -40,6 +40,10 @@ const CSS = {
   image: "demo-mario-locate__image"
 };
 
+function playAudio(path: string) {
+  new Audio(require.toUrl(path)).play();
+}
+
 @subclass("demo.MarioLocate")
 class MarioLocate extends declared(Widget) {
   //--------------------------------------------------------------------------
@@ -69,17 +73,16 @@ class MarioLocate extends declared(Widget) {
   postInitialize() {
     this.own(
       watchUtils.watch(this, "viewModel.state", (state, oldState) => {
-        const playNewScreenSound = state === "ready" && oldState === "locating";
-        const playWarpSound = state === "locating";
+        if (state === "ready" && oldState === "locating") {
+          playAudio("./wav/hello.wav");
+        }
 
-        const soundUrl = playWarpSound
-          ? "./wav/warp.wav"
-          : playNewScreenSound
-            ? "./wav/newscreen.wav"
-            : null;
+        if (state === "locating" && oldState === "ready") {
+          playAudio("./wav/herewego.wav");
 
-        if (soundUrl) {
-          new Audio(require.toUrl(soundUrl)).play();
+          setTimeout(() => {
+            playAudio("./wav/warp.wav");
+          }, 1000);
         }
       })
     );

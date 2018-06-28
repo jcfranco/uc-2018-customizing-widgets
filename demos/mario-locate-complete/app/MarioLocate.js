@@ -22,6 +22,9 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         base: "demo-mario-locate",
         image: "demo-mario-locate__image"
     };
+    function playAudio(path) {
+        new Audio(require.toUrl(path)).play();
+    }
     var MarioLocate = /** @class */ (function (_super) {
         __extends(MarioLocate, _super);
         //--------------------------------------------------------------------------
@@ -64,15 +67,14 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         }
         MarioLocate.prototype.postInitialize = function () {
             this.own(watchUtils.watch(this, "viewModel.state", function (state, oldState) {
-                var playNewScreenSound = state === "ready" && oldState === "locating";
-                var playWarpSound = state === "locating";
-                var soundUrl = playWarpSound
-                    ? "./wav/warp.wav"
-                    : playNewScreenSound
-                        ? "./wav/newscreen.wav"
-                        : null;
-                if (soundUrl) {
-                    new Audio(require.toUrl(soundUrl)).play();
+                if (state === "ready" && oldState === "locating") {
+                    playAudio("./wav/hello.wav");
+                }
+                if (state === "locating" && oldState === "ready") {
+                    playAudio("./wav/herewego.wav");
+                    setTimeout(function () {
+                        playAudio("./wav/warp.wav");
+                    }, 1000);
                 }
             }));
         };

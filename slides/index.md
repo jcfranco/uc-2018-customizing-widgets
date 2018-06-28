@@ -343,7 +343,7 @@ Lets create a custom widget view.
 
 Create a custom Locate widget view
 
-- [Demo Steps](../demos/mario-locate-start/steps/STEPS.md)
+- [Demo Steps](../demos/mario-locate-steps/steps/0.steps.md)
 - [Demo Complete](../demos/mario-locate-complete/)
 - [Demo Start](../demos/mario-locate-start/)
 

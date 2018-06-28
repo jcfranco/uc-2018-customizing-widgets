@@ -51,7 +51,7 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             _this.viewModel.graphic = new Graphic({
                 popupTemplate: {
                     title: "It's-a me, Mario!",
-                    content: '<iframe width="auto" height="150" src="https://www.youtube.com/embed/T_xZ7yXiFws?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
+                    content: '<iframe width="100%" src="https://www.youtube.com/embed/T_xZ7yXiFws?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
                 },
                 symbol: {
                     type: "picture-marker",

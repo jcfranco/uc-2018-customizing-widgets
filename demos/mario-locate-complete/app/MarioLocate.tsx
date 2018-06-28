@@ -55,7 +55,7 @@ class MarioLocate extends declared(Widget) {
       popupTemplate: {
         title: "It's-a me, Mario!",
         content:
-          '<iframe width="auto" height="150" src="https://www.youtube.com/embed/T_xZ7yXiFws?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
+          '<iframe width="100%" src="https://www.youtube.com/embed/T_xZ7yXiFws?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
       },
       symbol: {
         type: "picture-marker",

@@ -55,11 +55,20 @@ class MarioLocate extends declared(Widget) {
   constructor(params?: any) {
     super();
 
+    // todo: cleanup this
+
+    const title = "It's-a me, Mario!"; // todo nls
+    const itsMeAudio = require.toUrl("./wav/itsame.wav");
+    const marioHeadImage = require.toUrl("./img/mario-head.gif");
+    const content = `<img alt="${title}" src="${marioHeadImage}" /><audio autoplay><source src="${itsMeAudio}" type="audio/ogg"></audio>`; // todo: align image center
+
+    const url = require.toUrl("./img/mario-map.gif");
+
     this.viewModel.graphic = new Graphic({
+      //todo: move to property
       popupTemplate: {
-        title: "It's-a me, Mario!",
-        content:
-          '<iframe width="100%" src="https://www.youtube.com/embed/T_xZ7yXiFws?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
+        title,
+        content
       },
       symbol: {
         type: "picture-marker",

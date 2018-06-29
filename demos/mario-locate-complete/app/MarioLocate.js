@@ -51,10 +51,16 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             //  viewModel
             //----------------------------------
             _this.viewModel = new LocateViewModel();
+            // todo: cleanup this
+            var title = "It's-a me, Mario!"; // todo nls
+            var itsMeAudio = require.toUrl("./wav/itsame.wav");
+            var marioHeadImage = require.toUrl("./img/mario-head.gif");
+            var content = "<img alt=\"" + title + "\" width=\"100%\" src=\"" + marioHeadImage + "\" /><audio autoplay><source src=\"" + itsMeAudio + "\" type=\"audio/ogg\"></audio>";
+            var url = require.toUrl("./img/mario-map.gif");
             _this.viewModel.graphic = new Graphic({
                 popupTemplate: {
-                    title: "It's-a me, Mario!",
-                    content: '<iframe width="100%" src="https://www.youtube.com/embed/T_xZ7yXiFws?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
+                    title: title,
+                    content: content
                 },
                 symbol: {
                     type: "picture-marker",

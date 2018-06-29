@@ -344,6 +344,7 @@ Lets create a custom widget view.
 Create a custom Locate widget view
 
 - [Demo Steps](../demos/mario-locate-steps/0.steps.md)
+- [Demo Steps GitHub](https://github.com/jcfranco/uc-2018-customizing-widgets/blob/master/demos/mario-locate-steps/0.steps.md)
 - [Demo Complete](../demos/mario-locate-complete/)
 - [Demo Start](../demos/mario-locate-start/)
 

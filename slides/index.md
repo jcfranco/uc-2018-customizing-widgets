@@ -290,7 +290,7 @@ API Exploration
 # Level II: `LocateViewModel`
 
 ```ts
-interface LocateViewModel interface GeolocationPositioningProperties {
+interface LocateViewModel {
   readonly state: string;
   locate(): IPromise<Object>;
   graphic?: Graphic;

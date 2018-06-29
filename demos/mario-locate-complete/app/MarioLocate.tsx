@@ -40,10 +40,6 @@ const CSS = {
   image: "demo-mario-locate__image"
 };
 
-function playAudio(path: string) {
-  new Audio(require.toUrl(path)).play();
-}
-
 @subclass("demo.MarioLocate")
 class MarioLocate extends declared(Widget) {
   //--------------------------------------------------------------------------
@@ -83,19 +79,23 @@ class MarioLocate extends declared(Widget) {
     this.own(
       watchUtils.watch(this, "viewModel.state", (state, oldState) => {
         if (state === "ready" && oldState === "locating") {
-          playAudio("./wav/hello.wav");
+          this._playAudio(["./wav/hello.wav"]);
         }
 
         if (state === "locating" && oldState === "ready") {
-          playAudio("./wav/herewego.wav");
-
-          setTimeout(() => {
-            playAudio("./wav/warp.wav");
-          }, 1000);
+          this._playAudio(["./wav/letsgo.wav", "./wav/warp.wav"]);
         }
       })
     );
   }
+
+  //--------------------------------------------------------------------------
+  //
+  //  Variables
+  //
+  //--------------------------------------------------------------------------
+
+  _audio: HTMLAudioElement = null;
 
   //--------------------------------------------------------------------------
   //
@@ -165,8 +165,29 @@ class MarioLocate extends declared(Widget) {
   //
   //--------------------------------------------------------------------------
 
+  private _playAudio(playlist: string[]): void {
+    if (this._audio) {
+      this._audio.pause();
+      this._audio = null;
+    }
+
+    const audioPath = playlist[0];
+    const audio = new Audio(require.toUrl(audioPath));
+
+    audio.addEventListener("ended", () => {
+      playlist.shift();
+      if (playlist.length) {
+        this._playAudio(playlist);
+      }
+    });
+
+    this._audio = audio;
+
+    audio.play();
+  }
+
   @accessibleHandler()
-  private _locate() {
+  private _locate(): void {
     this.locate();
   }
 }

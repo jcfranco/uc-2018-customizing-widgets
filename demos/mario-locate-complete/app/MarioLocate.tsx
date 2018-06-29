@@ -55,19 +55,19 @@ class MarioLocate extends declared(Widget) {
   constructor(params?: any) {
     super();
 
-    // todo: cleanup this
+    const itsMeAudioSrc = require.toUrl("./wav/itsme.wav");
+    const marioImageSrc = require.toUrl("./img/mario-head.gif");
 
-    const title = "It's-a me, Mario!"; // todo nls
-    const itsMeAudio = require.toUrl("./wav/itsame.wav");
-    const marioHeadImage = require.toUrl("./img/mario-head.gif");
-    const content = `<img alt="${title}" src="${marioHeadImage}" /><audio autoplay><source src="${itsMeAudio}" type="audio/ogg"></audio>`; // todo: align image center
-
-    const url = require.toUrl("./img/mario-map.gif");
+    const content = `
+    <div style="text-align:center;">
+      <img alt="${i18n.mario}" height="150" src="${marioImageSrc}" />
+      <audio autoplay><source src="${itsMeAudioSrc}" type="audio/wav" />
+    </div>
+    `;
 
     this.viewModel.graphic = new Graphic({
-      //todo: move to property
       popupTemplate: {
-        title,
+        title: i18n.mario,
         content
       },
       symbol: {
@@ -138,7 +138,10 @@ class MarioLocate extends declared(Widget) {
   render() {
     const { state } = this.viewModel;
 
-    const imgSrc = state === "locating" ? "./img/warp.gif" : "./img/locate.png";
+    const imagePath =
+      state === "locating" ? "./img/warp.gif" : "./img/locate.png";
+
+    const imageSrc = require.toUrl(imagePath);
 
     return (
       <div
@@ -149,9 +152,9 @@ class MarioLocate extends declared(Widget) {
         onkeydown={this._locate}
         role="button"
         tabIndex={0}
-        aria-label={i18n.title}
+        aria-label={i18n.locate}
       >
-        <img alt={i18n.title} class={CSS.image} src={require.toUrl(imgSrc)} />
+        <img alt={i18n.locate} class={CSS.image} src={imageSrc} />
       </div>
     );
   }

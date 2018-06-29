@@ -51,15 +51,12 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             //  viewModel
             //----------------------------------
             _this.viewModel = new LocateViewModel();
-            // todo: cleanup this
-            var title = "It's-a me, Mario!"; // todo nls
-            var itsMeAudio = require.toUrl("./wav/itsame.wav");
-            var marioHeadImage = require.toUrl("./img/mario-head.gif");
-            var content = "<img alt=\"" + title + "\" width=\"100%\" src=\"" + marioHeadImage + "\" /><audio autoplay><source src=\"" + itsMeAudio + "\" type=\"audio/ogg\"></audio>";
-            var url = require.toUrl("./img/mario-map.gif");
+            var itsMeAudioSrc = require.toUrl("./wav/itsme.wav");
+            var marioImageSrc = require.toUrl("./img/mario-head.gif");
+            var content = "\n    <div style=\"text-align:center;\">\n      <img alt=\"" + i18n.mario + "\" height=\"150\" src=\"" + marioImageSrc + "\" />\n      <audio autoplay><source src=\"" + itsMeAudioSrc + "\" type=\"audio/wav\" />\n    </div>\n    ";
             _this.viewModel.graphic = new Graphic({
                 popupTemplate: {
-                    title: title,
+                    title: i18n.mario,
                     content: content
                 },
                 symbol: {
@@ -92,9 +89,10 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         MarioLocate.prototype.locate = function () { };
         MarioLocate.prototype.render = function () {
             var state = this.viewModel.state;
-            var imgSrc = state === "locating" ? "./img/warp.gif" : "./img/locate.png";
-            return (widget_1.tsx("div", { class: CSS.base, bind: this, hidden: state === "feature-unsupported", onclick: this._locate, onkeydown: this._locate, role: "button", tabIndex: 0, "aria-label": i18n.title },
-                widget_1.tsx("img", { alt: i18n.title, class: CSS.image, src: require.toUrl(imgSrc) })));
+            var imagePath = state === "locating" ? "./img/warp.gif" : "./img/locate.png";
+            var imageSrc = require.toUrl(imagePath);
+            return (widget_1.tsx("div", { class: CSS.base, bind: this, hidden: state === "feature-unsupported", onclick: this._locate, onkeydown: this._locate, role: "button", tabIndex: 0, "aria-label": i18n.locate },
+                widget_1.tsx("img", { alt: i18n.locate, class: CSS.image, src: imageSrc })));
         };
         //--------------------------------------------------------------------------
         //

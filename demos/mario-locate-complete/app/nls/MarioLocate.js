@@ -1,6 +1,7 @@
 define({
   root: ({
-    title: "Where's-a Mario?"
+    locate: "Locate Mario!",
+    mario: "It's-a me, Mario!"
   }),
   "es": 1
 });

@@ -1,3 +1,4 @@
 define({
-  title: "¿dónde está Mario?"
+  locate: "¡Encuentra a Mario!",
+  mario: "¡Soy yo, mario!"
 });

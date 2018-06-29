@@ -5,10 +5,7 @@
 import i18n = require("dojo/i18n!esri/widgets/Bookmarks/nls/Bookmarks");
 
 // esri.core.accessorSupport
-import {
-  declared,
-  subclass
-} from "esri/core/accessorSupport/decorators";
+import { declared, subclass } from "esri/core/accessorSupport/decorators";
 
 // esri.widgets
 import Bookmarks = require("esri/widgets/Bookmarks");
@@ -36,7 +33,6 @@ const AUDIO_SFX = require.toUrl("./assets/pipe.wav");
 
 @subclass("esri.widgets.CustomBookmarks")
 class CustomBookmarks extends declared(Bookmarks) {
-
   //--------------------------------------------------------------------------
   //
   //  Variables

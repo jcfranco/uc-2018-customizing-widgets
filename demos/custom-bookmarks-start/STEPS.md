@@ -6,6 +6,7 @@ Please refer to the following for more information:
 
 - [Setting up TypeScript](https://developers.arcgis.com/javascript/latest/guide/typescript-setup/index.html)
 - [Widget Development](https://developers.arcgis.com/javascript/latest/guide/custom-widget/index.html)
-____________
+
+---
 
 # TBD

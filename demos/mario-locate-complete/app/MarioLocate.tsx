@@ -143,6 +143,12 @@ class MarioLocate extends declared(Widget) {
 
     const imageSrc = require.toUrl(imagePath);
 
+    const imageNode = (
+      <img alt={i18n.locate} class={CSS.image} src={imageSrc} />
+    );
+
+    // todo: question: do we want to use nls for this demo? maybe ignore for customizing? do we want to use CSS object?
+
     return (
       <div
         class={CSS.base}
@@ -154,7 +160,7 @@ class MarioLocate extends declared(Widget) {
         tabIndex={0}
         aria-label={i18n.locate}
       >
-        <img alt={i18n.locate} class={CSS.image} src={imageSrc} />
+        {imageNode}
       </div>
     );
   }

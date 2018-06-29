@@ -93,7 +93,6 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             var imagePath = state === "locating" ? "./img/warp.gif" : "./img/locate.png";
             var imageSrc = require.toUrl(imagePath);
             var imageNode = (widget_1.tsx("img", { alt: i18n.locate, class: CSS.image, src: imageSrc }));
-            // todo: question: do we want to use nls for this demo? maybe ignore for customizing? do we want to use CSS object?
             return (widget_1.tsx("div", { class: CSS.base, bind: this, hidden: state === "feature-unsupported", onclick: this._locate, onkeydown: this._locate, role: "button", tabIndex: 0, "aria-label": i18n.locate }, imageNode));
         };
         //--------------------------------------------------------------------------

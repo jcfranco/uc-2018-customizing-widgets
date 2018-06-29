@@ -147,8 +147,6 @@ class MarioLocate extends declared(Widget) {
       <img alt={i18n.locate} class={CSS.image} src={imageSrc} />
     );
 
-    // todo: question: do we want to use nls for this demo? maybe ignore for customizing? do we want to use CSS object?
-
     return (
       <div
         class={CSS.base}

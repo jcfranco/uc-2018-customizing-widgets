@@ -16,12 +16,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/core/tsSupport/decorateHelper", "dojo/i18n!./nls/MarioLocate", "esri/Graphic", "esri/core/watchUtils", "esri/core/accessorSupport/decorators", "esri/widgets/Widget", "esri/widgets/Locate/LocateViewModel", "esri/widgets/support/widget"], function (require, exports, __extends, __decorate, i18n, Graphic, watchUtils, decorators_1, Widget, LocateViewModel, widget_1) {
+define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/core/tsSupport/decorateHelper", "esri/Graphic", "esri/core/watchUtils", "esri/core/accessorSupport/decorators", "esri/widgets/Widget", "esri/widgets/Locate/LocateViewModel", "esri/widgets/support/widget"], function (require, exports, __extends, __decorate, Graphic, watchUtils, decorators_1, Widget, LocateViewModel, widget_1) {
     "use strict";
-    var CSS = {
-        base: "demo-mario-locate",
-        image: "demo-mario-locate__image"
-    };
     var MarioLocate = /** @class */ (function (_super) {
         __extends(MarioLocate, _super);
         //--------------------------------------------------------------------------
@@ -54,12 +50,13 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             //  viewModel
             //----------------------------------
             _this.viewModel = new LocateViewModel();
+            var title = "It's-a me, Mario!";
             var itsMeAudioSrc = require.toUrl("./wav/itsme.wav");
             var marioImageSrc = require.toUrl("./img/mario-head.gif");
-            var content = "\n    <div style=\"text-align:center;\">\n      <img alt=\"" + i18n.mario + "\" height=\"150\" src=\"" + marioImageSrc + "\" />\n      <audio autoplay><source src=\"" + itsMeAudioSrc + "\" type=\"audio/wav\" />\n    </div>\n    ";
+            var content = "\n    <div style=\"text-align:center;\">\n      <img alt=\"" + title + "\" height=\"150\" src=\"" + marioImageSrc + "\" />\n      <audio autoplay><source src=\"" + itsMeAudioSrc + "\" type=\"audio/wav\" />\n    </div>\n    ";
             _this.viewModel.graphic = new Graphic({
                 popupTemplate: {
-                    title: i18n.mario,
+                    title: title,
                     content: content
                 },
                 symbol: {
@@ -92,8 +89,9 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             var state = this.viewModel.state;
             var imagePath = state === "locating" ? "./img/warp.gif" : "./img/locate.png";
             var imageSrc = require.toUrl(imagePath);
-            var imageNode = (widget_1.tsx("img", { alt: i18n.locate, class: CSS.image, src: imageSrc }));
-            return (widget_1.tsx("div", { class: CSS.base, bind: this, hidden: state === "feature-unsupported", onclick: this._locate, onkeydown: this._locate, role: "button", tabIndex: 0, "aria-label": i18n.locate }, imageNode));
+            var locate = "Locate Mario!";
+            var imageNode = widget_1.tsx("img", { alt: locate, class: "demo-mario-locate__image", src: imageSrc });
+            return (widget_1.tsx("div", { class: "demo-mario-locate", bind: this, hidden: state === "feature-unsupported", onclick: this._locate, onkeydown: this._locate, role: "button", tabIndex: 0, "aria-label": locate }, imageNode));
         };
         //--------------------------------------------------------------------------
         //

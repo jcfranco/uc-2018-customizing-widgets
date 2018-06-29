@@ -1,9 +1,6 @@
 /// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
 /// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
 
-// dojo
-import * as i18n from "dojo/i18n!./nls/MarioLocate";
-
 // esri
 import Graphic = require("esri/Graphic");
 
@@ -11,12 +8,7 @@ import Graphic = require("esri/Graphic");
 import watchUtils = require("esri/core/watchUtils");
 
 // esri.core.accessorSupport
-import {
-  aliasOf,
-  subclass,
-  property,
-  declared
-} from "esri/core/accessorSupport/decorators";
+import { aliasOf, subclass, property, declared } from "esri/core/accessorSupport/decorators";
 
 // esri.views
 import View = require("esri/views/View");
@@ -28,17 +20,7 @@ import Widget = require("esri/widgets/Widget");
 import LocateViewModel = require("esri/widgets/Locate/LocateViewModel");
 
 // esri.widgets.support
-import {
-  accessibleHandler,
-  tsx,
-  renderable,
-  vmEvent
-} from "esri/widgets/support/widget";
-
-const CSS = {
-  base: "demo-mario-locate",
-  image: "demo-mario-locate__image"
-};
+import { accessibleHandler, tsx, renderable, vmEvent } from "esri/widgets/support/widget";
 
 @subclass("demo.MarioLocate")
 class MarioLocate extends declared(Widget) {
@@ -51,19 +33,21 @@ class MarioLocate extends declared(Widget) {
   constructor(params?: any) {
     super();
 
+    const title = "It's-a me, Mario!";
+
     const itsMeAudioSrc = require.toUrl("./wav/itsme.wav");
     const marioImageSrc = require.toUrl("./img/mario-head.gif");
 
     const content = `
     <div style="text-align:center;">
-      <img alt="${i18n.mario}" height="150" src="${marioImageSrc}" />
+      <img alt="${title}" height="150" src="${marioImageSrc}" />
       <audio autoplay><source src="${itsMeAudioSrc}" type="audio/wav" />
     </div>
     `;
 
     this.viewModel.graphic = new Graphic({
       popupTemplate: {
-        title: i18n.mario,
+        title,
         content
       },
       symbol: {
@@ -138,25 +122,23 @@ class MarioLocate extends declared(Widget) {
   render() {
     const { state } = this.viewModel;
 
-    const imagePath =
-      state === "locating" ? "./img/warp.gif" : "./img/locate.png";
+    const imagePath = state === "locating" ? "./img/warp.gif" : "./img/locate.png";
 
     const imageSrc = require.toUrl(imagePath);
 
-    const imageNode = (
-      <img alt={i18n.locate} class={CSS.image} src={imageSrc} />
-    );
+    const locate = "Locate Mario!";
+    const imageNode = <img alt={locate} class="demo-mario-locate__image" src={imageSrc} />;
 
     return (
       <div
-        class={CSS.base}
+        class="demo-mario-locate"
         bind={this}
         hidden={state === "feature-unsupported"}
         onclick={this._locate}
         onkeydown={this._locate}
         role="button"
         tabIndex={0}
-        aria-label={i18n.locate}
+        aria-label={locate}
       >
         {imageNode}
       </div>

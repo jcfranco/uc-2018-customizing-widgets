@@ -78,7 +78,7 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
                     _this._playAudio(["./wav/hello.wav"]);
                 }
                 if (state === "locating" && oldState === "ready") {
-                    _this._playAudio(["./wav/letsgo.wav", "./wav/warp.wav"]);
+                    _this._playAudio(["./wav/herewego.wav", "./wav/warp.wav"]);
                 }
             }));
         };

@@ -83,7 +83,7 @@ class MarioLocate extends declared(Widget) {
         }
 
         if (state === "locating" && oldState === "ready") {
-          this._playAudio(["./wav/letsgo.wav", "./wav/warp.wav"]);
+          this._playAudio(["./wav/herewego.wav", "./wav/warp.wav"]);
         }
       })
     );

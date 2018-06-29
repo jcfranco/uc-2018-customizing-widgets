@@ -4,7 +4,9 @@
 # ArcGIS API for JavaScript: Customizing Widgets
 
 ### Alan Sangma – [@alansangma](https://twitter.com/alansangma)
+
 ### Matt Driscoll – [@driskull](https://twitter.com/driskull)
+
 ### JC Franco – [@arfncode](https://twitter.com/arfncode)
 
 ---
@@ -30,7 +32,7 @@
 
 - Authoring a theme <!-- .element: class="fragment" data-fragment-index="1" -->
 - Recreating a view <!-- .element: class="fragment" data-fragment-index="2" -->
-- Extending a view  <!-- .element: class="fragment" data-fragment-index="3" -->
+- Extending a view <!-- .element: class="fragment" data-fragment-index="3" -->
 
 ---
 
@@ -45,15 +47,19 @@
 
 <h2 class="eight-bit">Theming</h2>
 
+<!-- .slide: data-background="img/bg-4.png" -->
+
 ---
 
 # Level I: Theming
-## Why Theme?                                  <!-- .element: class="fragment" data-fragment-index="0" -->
-- Match branding.                              <!-- .element: class="fragment" data-fragment-index="1" -->
-- Match the map.                         <!-- .element: class="fragment" data-fragment-index="2" -->
-- Contrast with the map.                 <!-- .element: class="fragment" data-fragment-index="3" -->
-- Based on the environment.              <!-- .element: class="fragment" data-fragment-index="4" -->
-- User-specific (e.g. bigger buttons)   <!-- .element: class="fragment" data-fragment-index="5" -->
+
+## Why Theme? <!-- .element: class="fragment" data-fragment-index="0" -->
+
+- Match branding. <!-- .element: class="fragment" data-fragment-index="1" -->
+- Match the map. <!-- .element: class="fragment" data-fragment-index="2" -->
+- Contrast with the map. <!-- .element: class="fragment" data-fragment-index="3" -->
+- Based on the environment. <!-- .element: class="fragment" data-fragment-index="4" -->
+- User-specific (e.g. bigger buttons) <!-- .element: class="fragment" data-fragment-index="5" -->
 
 ---
 
@@ -66,6 +72,7 @@ We use
 ![Sass](img/sass-white.png)
 
 ### to create our CSS.
+
 <img src="img/nodejs-new-pantone-black.png" height="80" style="margin-left:10px; margin-right: 10px;"/><!-- .element: class="fragment" data-fragment-index="1" -->
 <img src="img/grunt.svg" height="80" style="margin-left:10px; margin-right: 10px;"/><!-- .element: class="fragment" data-fragment-index="1" -->
 
@@ -77,9 +84,9 @@ We use
 
 ### is a powerful scripting language for compiling CSS.
 
-- It's modular.                       <!-- .element: class="fragment" data-fragment-index="1" -->
-- It's DRY.                           <!-- .element: class="fragment" data-fragment-index="2" -->
-- It makes theming easy.              <!-- .element: class="fragment" data-fragment-index="3" -->
+- It's modular. <!-- .element: class="fragment" data-fragment-index="1" -->
+- It's DRY. <!-- .element: class="fragment" data-fragment-index="2" -->
+- It makes theming easy. <!-- .element: class="fragment" data-fragment-index="3" -->
 
 ---
 
@@ -89,12 +96,13 @@ We use
 ---
 
 Before, you needed to
-1. Pull down the API <a href="https://github.com/Esri/arcgis-js-api/tree/4master">(arcgis-js-api)</a>.
-1. Create a theme directory in the right place.
-1. Create a Sass file.
-1. Import the core file.
-1. Run the compiler.
-1. Wonder if there were an easier way. <!-- .element: class="fragment" data-fragment-index="1" -->
+
+1.  Pull down the API <a href="https://github.com/Esri/arcgis-js-api/tree/4master">(arcgis-js-api)</a>.
+1.  Create a theme directory in the right place.
+1.  Create a Sass file.
+1.  Import the core file.
+1.  Run the compiler.
+1.  Wonder if there were an easier way. <!-- .element: class="fragment" data-fragment-index="1" -->
 
 ---
 
@@ -123,6 +131,7 @@ Before, you needed to
 ---
 
 # Step 1
+
 Clone the repo.<br/>
 <a href="https://github.com/jcfranco/jsapi-styles" target="_blank">https://github.com/jcfranco/jsapi-styles</a>
 
@@ -135,6 +144,7 @@ git clone https://github.com/jcfranco/interactive-design.git
 ---
 
 # Step 2
+
 `npm install`
 
 <div>
@@ -147,6 +157,7 @@ git clone https://github.com/jcfranco/interactive-design.git
 ---
 
 # Step 3
+
 Edit your theme.<br/>
 `sass/my-theme/main.scss`
 
@@ -175,6 +186,7 @@ Link your stylesheet in your app.
 ---
 
 # Theme Smart
+
 Avoid adding additional CSS selectors.<br/>
 Instead, use Sass to your advantage.<br/>
 <span>Let's look at how the core theme is structured.</span><!-- .element: class="fragment" data-fragment-index="1" -->
@@ -192,6 +204,7 @@ Instead, use Sass to your advantage.<br/>
 # Theme Structure
 
 ### Default
+
 ```
 // Inside base/_colorVariables.scss
 $background_color : #fff !default ;
@@ -208,16 +221,18 @@ $background_color : #cc4b09;
 
 # So let's make a theme!
 
+<!-- .slide: data-background="img/bg-5.png" -->
+
 ---
 
 # Level I: Theming Recap
 
-* Use the utility for easy theming. <!-- .element: class="fragment" data-fragment-index="1" -->
-* Theme structure <!-- .element: class="fragment" data-fragment-index="2" -->
-  - Color         <!-- .element: class="fragment" data-fragment-index="2" -->
-  - Size          <!-- .element: class="fragment" data-fragment-index="2" -->
-  - Typography    <!-- .element: class="fragment" data-fragment-index="2" -->
-* Use the core and override values. <!-- .element: class="fragment" data-fragment-index="3" -->
+- Use the utility for easy theming. <!-- .element: class="fragment" data-fragment-index="1" -->
+- Theme structure <!-- .element: class="fragment" data-fragment-index="2" -->
+  - Color <!-- .element: class="fragment" data-fragment-index="2" -->
+  - Size <!-- .element: class="fragment" data-fragment-index="2" -->
+  - Typography <!-- .element: class="fragment" data-fragment-index="2" -->
+- Use the core and override values. <!-- .element: class="fragment" data-fragment-index="3" -->
 
 ---
 
@@ -228,6 +243,8 @@ $background_color : #cc4b09;
 
 <h2 class="eight-bit">Ready?</h2>
 
+<!-- .slide: data-background="img/bg-4.png" -->
+
 ---
 
 <!-- LEVEL UP B -->
@@ -237,50 +254,48 @@ $background_color : #cc4b09;
 
 <h2 class="eight-bit">Views</h2>
 
+<!-- .slide: data-background="img/bg-4.png" -->
+
 ---
 
 <!-- Presenter: Matt -->
+
 # Level II: Widget Composition
 
 Widgets are composed of Views & ViewModels <!-- .element: class="fragment" data-fragment-index="0" -->
 
-  - Reusable                  <!-- .element: class="fragment" data-fragment-index="1" -->
-  - UI replacement            <!-- .element: class="fragment" data-fragment-index="2" -->
-  - Framework integration     <!-- .element: class="fragment" data-fragment-index="3" -->
+- Reusable <!-- .element: class="fragment" data-fragment-index="1" -->
+- UI replacement <!-- .element: class="fragment" data-fragment-index="2" -->
+- Framework integration <!-- .element: class="fragment" data-fragment-index="3" -->
 
 ---
 
 # Level II: Views
 
-- Presentation of the Widget              <!-- .element: class="fragment" data-fragment-index="1" -->
-- Uses ViewModel APIs to render the UI    <!-- .element: class="fragment" data-fragment-index="2" -->
-- View-specific logic resides here        <!-- .element: class="fragment" data-fragment-index="3" -->
+- Presentation of the Widget <!-- .element: class="fragment" data-fragment-index="1" -->
+- Uses ViewModel APIs to render the UI <!-- .element: class="fragment" data-fragment-index="2" -->
+- View-specific logic resides here <!-- .element: class="fragment" data-fragment-index="3" -->
 
 ---
 
 # Level II: Working with Views
 
- API Exploration
+API Exploration
 
-- [Attribution Doc](https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Attribution.html)
-- [Attribution Sample](https://developers.arcgis.com/javascript/latest/sample-code/widgets-layerlist/index.html)
+- [Locate Doc](https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Locate.html)
+- [Locate Sample](https://developers.arcgis.com/javascript/latest/sample-code/widgets-locate/index.html)
 
 ---
 
-# Level II: `AttributionViewModel`
+# Level II: `LocateViewModel`
 
 ```ts
-// AttributionViewModel in 4.8 Release
-
-interface AttributionViewModel {
-  items: Collection<AttributionItem>;
-  state: "ready" | "disabled";
-  view: MapView | SceneView;
-}
-
-interface AttributionItem {
-  layer: Layer;
-  text: string;
+interface LocateViewModel interface GeolocationPositioningProperties {
+  readonly state: string;
+  locate(): IPromise<Object>;
+  graphic?: Graphic;
+  scale?: number;
+  view?: MapView | SceneView;
 }
 ```
 
@@ -294,15 +309,15 @@ Lets create a custom widget view.
 
 # Demo
 
-Create a custom Attribution Table view
+Create a custom Locate widget view
 
-- [Demo Steps](https://github.com/jcfranco/uc-2018-customizing-widgets/tree/master/demos/custom-attribution-start/steps/STEPS.md)
-- [Demo Complete](../demos/custom-attribution-complete/)
-- [Demo Start](../demos/custom-attribution-start/)
+- [Demo Steps](../demos/mario-locate-steps/0.steps.md)
+- [Demo Complete](../demos/mario-locate-complete/)
+- [Demo Start](../demos/mario-locate-start/)
 
-[![Level 2 demo](img/level2demo.png)](https://jcfranco.github.io/uc-2018-customizing-widgets/demos/custom-attribution-complete/)
+[![Level 2 demo](img/level2demo.png)](../demos/mario-locate-complete/)
 
-<!-- .slide: data-background="img/bg-2.png" -->
+<!-- .slide: data-background="img/bg-5.png" -->
 
 ---
 
@@ -324,6 +339,8 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 
 <h2 class="eight-bit">Ready?</h2>
 
+<!-- .slide: data-background="img/bg-4.png" -->
+
 ---
 
 <!-- LEVEL UP B -->
@@ -333,25 +350,28 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 
 <h2 class="eight-bit">Extending a View</h2>
 
+<!-- .slide: data-background="img/bg-4.png" -->
+
 ---
 
 <!-- Presenter: JC -->
+
 # Level III: Extending a View
 
-- Why?                          <!-- .element: class="fragment" data-fragment-index="1" -->
-  - Reusable                    <!-- .element: class="fragment" data-fragment-index="2" -->
-  - Same ecosystem              <!-- .element: class="fragment" data-fragment-index="3" -->
-- How?                          <!-- .element: class="fragment" data-fragment-index="4" -->
-  - JS API v4.8                 <!-- .element: class="fragment" data-fragment-index="5" -->
+- Why? <!-- .element: class="fragment" data-fragment-index="1" -->
+  - Reusable <!-- .element: class="fragment" data-fragment-index="2" -->
+  - Same ecosystem <!-- .element: class="fragment" data-fragment-index="3" -->
+- How? <!-- .element: class="fragment" data-fragment-index="4" -->
+  - JS API v4.8 <!-- .element: class="fragment" data-fragment-index="5" -->
   - <!-- .element: class="fragment" data-fragment-index="5" --> `esri/widgets/Widget`
-  - TypeScript                  <!-- .element: class="fragment" data-fragment-index="5" -->
+  - TypeScript <!-- .element: class="fragment" data-fragment-index="5" -->
 
 ---
 
 `esri/widgets/Widget`
 
-- Provides lifecycle            <!-- .element: class="fragment" data-fragment-index="1" -->
-- API consistency               <!-- .element: class="fragment" data-fragment-index="2" -->
+- Provides lifecycle <!-- .element: class="fragment" data-fragment-index="1" -->
+- API consistency <!-- .element: class="fragment" data-fragment-index="2" -->
 
 ---
 
@@ -366,46 +386,46 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 
 # `render`
 
-- Defines UI                <!-- .element: class="fragment" data-fragment-index="1" -->
-- Reacts to state           <!-- .element: class="fragment" data-fragment-index="2" -->
-- Uses JSX                  <!-- .element: class="fragment" data-fragment-index="3" -->
-- VDOM                      <!-- .element: class="fragment" data-fragment-index="4" -->
+- Defines UI <!-- .element: class="fragment" data-fragment-index="1" -->
+- Reacts to state <!-- .element: class="fragment" data-fragment-index="2" -->
+- Uses JSX <!-- .element: class="fragment" data-fragment-index="3" -->
+- VDOM <!-- .element: class="fragment" data-fragment-index="4" -->
 
 ---
 
 # TypeScript
 
-- Typed JavaScript          <!-- .element: class="fragment" data-fragment-index="1" -->
-- JS of the future, now     <!-- .element: class="fragment" data-fragment-index="2" -->
-- IDE support               <!-- .element: class="fragment" data-fragment-index="3" -->
-  - Visual Studio           <!-- .element: class="fragment" data-fragment-index="3" -->
-  - WebStorm                <!-- .element: class="fragment" data-fragment-index="3" -->
-  - Sublime                 <!-- .element: class="fragment" data-fragment-index="3" -->
-  - and more!               <!-- .element: class="fragment" data-fragment-index="3" -->
+- Typed JavaScript <!-- .element: class="fragment" data-fragment-index="1" -->
+- JS of the future, now <!-- .element: class="fragment" data-fragment-index="2" -->
+- IDE support <!-- .element: class="fragment" data-fragment-index="3" -->
+  - Visual Studio <!-- .element: class="fragment" data-fragment-index="3" -->
+  - WebStorm <!-- .element: class="fragment" data-fragment-index="3" -->
+  - Sublime <!-- .element: class="fragment" data-fragment-index="3" -->
+  - and more! <!-- .element: class="fragment" data-fragment-index="3" -->
 
 ---
 
 # Demo: Extending a View
 
-[Demo](https://jcfranco.github.io/uc-2018-customizing-widgets/demos/custombasemapgallery-end/)
+[Demo](https://jcfranco.github.io/uc-2018-customizing-widgets/demos/custom-bookmarks-end/)
 |
-[Steps](https://github.com/jcfranco/uc-2018-customizing-widgets/blob/master/demos/custombasemapgallery-start/STEPS.md)
+[Steps](https://github.com/jcfranco/uc-2018-customizing-widgets/blob/master/demos/custom-bookmarks-start/STEPS.md)
 
 <img src="img/demo-extending-view.png" width="50%"/>
 
-<!-- .slide: data-background="img/bg-2.png" -->
+<!-- .slide: data-background="img/bg-5.png" -->
 
 ---
 
 # Level III: Extending a View Recap
 
-- Reusable                          <!-- .element: class="fragment" data-fragment-index="1" -->
-  - View/ViewModel                  <!-- .element: class="fragment" data-fragment-index="1" -->
-- Same ecosystem                    <!-- .element: class="fragment" data-fragment-index="2" -->
-  - No extra libraries              <!-- .element: class="fragment" data-fragment-index="2" -->
-- Extended existing widget          <!-- .element: class="fragment" data-fragment-index="3" -->
-  - Lifecycle                       <!-- .element: class="fragment" data-fragment-index="3" -->
-  - TypeScript                      <!-- .element: class="fragment" data-fragment-index="3" -->
+- Reusable <!-- .element: class="fragment" data-fragment-index="1" -->
+  - View/ViewModel <!-- .element: class="fragment" data-fragment-index="1" -->
+- Same ecosystem <!-- .element: class="fragment" data-fragment-index="2" -->
+  - No extra libraries <!-- .element: class="fragment" data-fragment-index="2" -->
+- Extended existing widget <!-- .element: class="fragment" data-fragment-index="3" -->
+  - Lifecycle <!-- .element: class="fragment" data-fragment-index="3" -->
+  - TypeScript <!-- .element: class="fragment" data-fragment-index="3" -->
 
 ---
 
@@ -416,6 +436,8 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 
 <h2 class="eight-bit">Ready?</h2>
 
+<!-- .slide: data-background="img/bg-4.png" -->
+
 ---
 
 <!-- LEVEL UP B -->
@@ -425,13 +447,15 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 
 <h2 class="eight-bit">Put it all together.</h2>
 
+<!-- .slide: data-background="img/bg-4.png" -->
+
 ---
 
 # Conclusion
 
-- Authored a theme      <!-- .element: class="fragment" data-fragment-index="1" -->
-- Recreated a view      <!-- .element: class="fragment" data-fragment-index="2" -->
-- Extended a view       <!-- .element: class="fragment" data-fragment-index="3" -->
+- Authored a theme <!-- .element: class="fragment" data-fragment-index="1" -->
+- Recreated a view <!-- .element: class="fragment" data-fragment-index="2" -->
+- Extended a view <!-- .element: class="fragment" data-fragment-index="3" -->
 
 ---
 
@@ -445,7 +469,7 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 ---
 
 <!-- **please rate us** -->
-<!-- .slide: data-background="img/ds18-survey.png" -->
+<!-- .slide: data-background="img/uc18-survey.png" -->
 
 ---
 
@@ -453,13 +477,10 @@ What have we learned about Widget Views? <!-- .element: class="fragment" data-fr
 
 ##### For example
 
-> &#x1f914; Where can I find the slides/source?
+> 🤔 Where can I find the slides/source?
 
-&#x1F449; [esriurl.com/customwidgetsuc2018](http://esriurl.com/customwidgetsuc2018) &#x1F448;
+👉 [esriurl.com/customwidgetsuc2018](http://esriurl.com/customwidgetsuc2018) 👈
 
 ---
 
-<!-- .slide: data-background="img/bg-final.jpg" -->
-
-![Thank You](img/thanks.gif)
-
+<!-- .slide: data-background="img/bg-final.png" -->

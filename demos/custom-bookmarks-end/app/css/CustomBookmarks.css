@@ -1,0 +1,44 @@
+/* overrides Bookmarks styles */
+
+.esri-bookmarks__bookmark-icon {
+  padding: 0 10px;
+}
+
+.esri-bookmarks__bookmark-icon--custom {
+  overflow: hidden;
+}
+
+/* custom Bookmarks styles */
+
+.esri-bookmarks__bookmark-icon--custom::after {
+  content: "";
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  background: url("../assets/mario-front.gif") no-repeat;
+  background-size: cover;
+  top: 0;
+  position: relative;
+}
+
+.esri-bookmarks__bookmark:hover .esri-bookmarks__bookmark-icon--custom::after,
+.esri-bookmarks__bookmark:focus .esri-bookmarks__bookmark-icon--custom::after {
+  background: url("../assets/mario-walking.gif") no-repeat;
+  background-size: cover;
+}
+
+.esri-bookmarks__bookmark:focus .esri-bookmarks__bookmark-icon--active::after,
+.esri-bookmarks__bookmark:hover .esri-bookmarks__bookmark-icon--active::after,
+.esri-bookmarks__bookmark .esri-bookmarks__bookmark-icon--active::after {
+  background: url("../assets/mario-down.gif") no-repeat;
+  animation: thisIsNotAPipe 1s linear forwards;
+}
+
+@keyframes thisIsNotAPipe {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: 40px;
+  }
+}

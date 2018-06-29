@@ -11,13 +11,13 @@
  *********************************************/
 body {
   /* http://colorzilla.com/gradient-editor/#0192ff+15,0192ff+15,6beac7+100 */
-  background: #0192ff;
+  background: #0A1D46;
   /* Old browsers */
-  background: -moz-linear-gradient(-45deg, #0192ff 15%, #0192ff 15%, #6beac7 100%);
+  background: -moz-linear-gradient(135deg, #0A1D46 15%, #0A1D46 15%, #1F617C 100%);
   /* FF3.6-15 */
-  background: -webkit-linear-gradient(-45deg, #0192ff 15%, #0192ff 15%, #6beac7 100%);
+  background: -webkit-linear-gradient(135deg, #0A1D46 15%, #0A1D46 15%, #1F617C 100%);
   /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(135deg, #0192ff 15%, #0192ff 15%, #6beac7 100%);
+  background: linear-gradient(135deg, #0A1D46 15%, #0A1D46 15%, #1F617C 100%);
   /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   background-color: #fff; }
 

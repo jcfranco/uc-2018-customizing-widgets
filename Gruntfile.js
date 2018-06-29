@@ -1,4 +1,4 @@
-module.exports = function (grunt) {
+module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-sass");
 
   grunt.initConfig({
@@ -7,11 +7,13 @@ module.exports = function (grunt) {
         outputStyle: "compressed"
       },
       dist: {
-        files: [{
-          expand: true,
-          src: ["**/*.scss", "!node_modules/**"],
-          ext: ".css"
-        }]
+        files: [
+          {
+            expand: true,
+            src: ["**/*.scss", "!node_modules/**"],
+            ext: ".css"
+          }
+        ]
       }
     }
   });

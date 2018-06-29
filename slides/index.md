@@ -100,23 +100,25 @@ Before, you needed to
 
 # There is an easier way!
 
-1. Get our theme utility. <!-- .element: class="fragment" data-fragment-index="1" -->
-1. Use the utility. <!-- .element: class="fragment" data-fragment-index="2" -->
-1. Customize your theme. <!-- .element: class="fragment" data-fragment-index="3" -->
-1. Host your CSS file. <!-- .element: class="fragment" data-fragment-index="4" -->
+<ol>
+  <li class="fragment">Get our theme utility.</li>
+  <li class="fragment">Use the utility.</li>
+  <li class="fragment">Customize your theme.</li>
+  <li class="fragment">Then magic.<br/><img src="img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/></li>
+</ol>
 
-<span style="visibility:hidden;">hidden</span>
+<div style="visibility:hidden;">You won't need the base stylesheet.</div>
 
 ---
 
 # There is an easier way!
-
-1. Clone the utility `jsapi-styles.git`
-1. Run `npm install`
-1. Edit <span style="font-weight:bold;">`sass/my-theme/main.scss`</span>.
-1. See <span style="font-weight:bold;">`dist/my-theme/main.css`</span>.
-
-<span>You won't need the base stylesheet.</span><!-- .element: class="fragment" data-fragment-index="1" -->
+<ol>
+  <li>Clone the utility `jsapi-styles.git`</li>
+  <li>Run `npm install`</li>
+  <li>Edit <span style="font-weight:bold;">`sass/my-theme/main.scss`</span>.</li>
+  <li>See <span style="font-weight:bold;">`dist/my-theme/main.css`</span>.<br/><img src="img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/></li>
+</ol>
+<div class="fragment">You won't need the base stylesheet.</div>
 
 ---
 
@@ -201,39 +203,6 @@ Any value assignment overrides the `!default` value.
 // Inside sass/my-theme/main.scss
 $background_color : #cc4b09;
 ```
-
-But wait...there's more!<!-- .element: class="fragment" data-fragment-index="1" -->
-
----
-
-# Theme Structure
-
-Override the four main color variables...
-
-```
-$text_color            : #fff;    // white
-$background_color      : #cc4b09; // mario
-$anchor_color          : #ffbaaa; // luigi
-$button_text_color     : #ffbaaa; // luigi
-```
-
-<span>...then magic!</span><!-- .element: class="fragment" data-fragment-index="1" -->
-
-<img src="./img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/><!-- .element: class="fragment" data-fragment-index="1" -->
-
----
-
-# Magic
-
-<img src="img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/>
-
-```
-  $button_text_hover_color: offset-foreground-color($button_text_color, 25%) !default;
-  $anchor_hover_color: offset-foreground-color($anchor_color, 25%) !default;
-  $background_hover_color: offset-background-color($background_color, 5%) !default;
-// etc.
-```
-<a href="https://developers.arcgis.com/javascript/latest/guide/styling/index.html#sassy-widgets" target="_blank">Theming Guide</a>
 
 ---
 

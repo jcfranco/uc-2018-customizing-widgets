@@ -6,7 +6,7 @@ define(["require", "exports", "esri/WebMap", "esri/widgets/Expand", "esri/views/
     //----------------
     var map = new WebMap({
         portalItem: {
-            id: "243cd45ee6ce4415ac119e44fcaca5bf"
+            id: "dfd8f2a1d61d4d9abd16d625aca6331b"
         }
     });
     var view = new MapView({

@@ -16,9 +16,7 @@ const map = new WebMap({
 
 const view = new MapView({
   map,
-  container: "view",
-  zoom: 15,
-  center: [-117.1628487109789, 32.706813240831096]
+  container: "view"
 });
 
 //----------------

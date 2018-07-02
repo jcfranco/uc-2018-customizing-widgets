@@ -39,7 +39,7 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             //
             //--------------------------------------------------------------------------
             var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this._animatedBookmarks = {};
+            _this._playingBookmarks = {};
             return _this;
         }
         //--------------------------------------------------------------------------
@@ -48,12 +48,13 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         //
         //--------------------------------------------------------------------------
         CustomBookmarks.prototype._renderBookmark = function (bookmark) {
+            var _a, _b;
             var active = bookmark.active, name = bookmark.name, thumbnail = bookmark.thumbnail;
             var bookmarkClasses = (_a = {},
                 _a[CSS.bookmarkActive] = active,
                 _a);
             var bookmarkIconClasses = (_b = {},
-                _b[CSS.bookmarkIconActive] = !!this._animatedBookmarks[bookmark.name],
+                _b[CSS.bookmarkIconActive] = !!this._playingBookmarks[bookmark.name],
                 _b);
             var imageSource = (thumbnail && thumbnail.url) || "";
             var imageNode = imageSource ? (widget_1.tsx("div", { class: CSS.bookmarkContainer },
@@ -61,21 +62,20 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             return (widget_1.tsx("li", { bind: this, "data-bookmark-item": bookmark, class: this.classes(CSS.bookmark, bookmarkClasses), onclick: this._goToBookmark, onkeydown: this._goToBookmark, tabIndex: 0, role: "button", title: i18n.goToBookmark, "aria-label": name },
                 imageNode,
                 widget_1.tsx("span", { class: CSS.bookmarkName }, name)));
-            var _a, _b;
         };
         CustomBookmarks.prototype._goToBookmark = function (event) {
             var node = event.currentTarget;
             var bookmark = node["data-bookmark-item"];
             this.viewModel.goTo(bookmark);
-            this._cueFX(bookmark);
+            this._play(bookmark);
         };
-        CustomBookmarks.prototype._cueFX = function (bookmark) {
+        CustomBookmarks.prototype._play = function (bookmark) {
             var _this = this;
             var sfx = new Audio(AUDIO_SFX);
             sfx.play();
-            this._animatedBookmarks[bookmark.name] = true;
+            this._playingBookmarks[bookmark.name] = true;
             setTimeout(function () {
-                _this._animatedBookmarks[bookmark.name] = false;
+                _this._playingBookmarks[bookmark.name] = false;
                 _this.scheduleRender();
             }, 1000);
         };

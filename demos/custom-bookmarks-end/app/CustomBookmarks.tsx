@@ -39,7 +39,7 @@ class CustomBookmarks extends declared(Bookmarks) {
   //
   //--------------------------------------------------------------------------
 
-  private _animatedBookmarks: HashMap = {};
+  private _playingBookmarks: HashMap<boolean> = {};
 
   //--------------------------------------------------------------------------
   //
@@ -55,7 +55,7 @@ class CustomBookmarks extends declared(Bookmarks) {
     };
 
     const bookmarkIconClasses = {
-      [CSS.bookmarkIconActive]: !!this._animatedBookmarks[bookmark.name]
+      [CSS.bookmarkIconActive]: !!this._playingBookmarks[bookmark.name]
     };
 
     const imageSource = (thumbnail && thumbnail.url) || "";
@@ -95,17 +95,17 @@ class CustomBookmarks extends declared(Bookmarks) {
     const bookmark = node["data-bookmark-item"] as Bookmark;
     this.viewModel.goTo(bookmark);
 
-    this._cueFX(bookmark);
+    this._play(bookmark);
   }
 
-  private _cueFX(bookmark: Bookmark): void {
+  private _play(bookmark: Bookmark): void {
     const sfx = new Audio(AUDIO_SFX);
     sfx.play();
 
-    this._animatedBookmarks[bookmark.name] = true;
+    this._playingBookmarks[bookmark.name] = true;
 
     setTimeout(() => {
-      this._animatedBookmarks[bookmark.name] = false;
+      this._playingBookmarks[bookmark.name] = false;
       this.scheduleRender();
     }, 1000);
   }

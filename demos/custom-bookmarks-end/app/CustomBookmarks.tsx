@@ -18,9 +18,7 @@ import { accessibleHandler, tsx } from "esri/widgets/support/widget";
 
 const CSS = {
   bookmark: "esri-bookmarks__bookmark",
-  bookmarkContainer: "esri-bookmarks__bookmark-container",
   bookmarkIcon: "esri-bookmarks__bookmark-icon",
-  bookmarkImage: "esri-bookmarks__image",
   bookmarkName: "esri-bookmarks__bookmark-name",
   bookmarkActive: "esri-bookmarks__bookmark--active",
 
@@ -28,8 +26,6 @@ const CSS = {
   customBookmarkIcon: "esri-bookmarks__bookmark-icon--custom",
   bookmarkIconActive: "esri-bookmarks__bookmark-icon--active"
 };
-
-const AUDIO_SFX = require.toUrl("./assets/pipe.wav");
 
 @subclass("esri.widgets.CustomBookmarks")
 class CustomBookmarks extends declared(Bookmarks) {
@@ -48,7 +44,7 @@ class CustomBookmarks extends declared(Bookmarks) {
   //--------------------------------------------------------------------------
 
   private _renderBookmark(bookmark: Bookmark): any {
-    const { active, name, thumbnail } = bookmark;
+    const { active, name } = bookmark;
 
     const bookmarkClasses = {
       [CSS.bookmarkActive]: active
@@ -57,19 +53,6 @@ class CustomBookmarks extends declared(Bookmarks) {
     const bookmarkIconClasses = {
       [CSS.bookmarkIconActive]: !!this._playingBookmarks[bookmark.name]
     };
-
-    const imageSource = (thumbnail && thumbnail.url) || "";
-
-    const imageNode = imageSource ? (
-      <div class={CSS.bookmarkContainer}>
-        <img src={imageSource} alt={name} class={CSS.bookmarkImage} />
-      </div>
-    ) : (
-      <span
-        aria-hidden="true"
-        class={this.classes(CSS.bookmarkIcon, CSS.customBookmarkIcon, bookmarkIconClasses)}
-      />
-    );
 
     return (
       <li
@@ -83,7 +66,10 @@ class CustomBookmarks extends declared(Bookmarks) {
         title={i18n.goToBookmark}
         aria-label={name}
       >
-        {imageNode}
+        <span
+          aria-hidden="true"
+          class={this.classes(CSS.bookmarkIcon, CSS.customBookmarkIcon, bookmarkIconClasses)}
+        />
         <span class={CSS.bookmarkName}>{name}</span>
       </li>
     );
@@ -99,15 +85,16 @@ class CustomBookmarks extends declared(Bookmarks) {
   }
 
   private _play(bookmark: Bookmark): void {
-    const sfx = new Audio(AUDIO_SFX);
-    sfx.play();
+    const sfx = new Audio(require.toUrl("./assets/pipe.wav"));
 
     this._playingBookmarks[bookmark.name] = true;
 
-    setTimeout(() => {
-      this._playingBookmarks[bookmark.name] = false;
-      this.scheduleRender();
-    }, 1000);
+    sfx.play().then(() => {
+      sfx.addEventListener("ended", () => {
+        this._playingBookmarks[bookmark.name] = false;
+        this.scheduleRender();
+      });
+    });
   }
 }
 

@@ -20,16 +20,13 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
     "use strict";
     var CSS = {
         bookmark: "esri-bookmarks__bookmark",
-        bookmarkContainer: "esri-bookmarks__bookmark-container",
         bookmarkIcon: "esri-bookmarks__bookmark-icon",
-        bookmarkImage: "esri-bookmarks__image",
         bookmarkName: "esri-bookmarks__bookmark-name",
         bookmarkActive: "esri-bookmarks__bookmark--active",
         // custom
         customBookmarkIcon: "esri-bookmarks__bookmark-icon--custom",
         bookmarkIconActive: "esri-bookmarks__bookmark-icon--active"
     };
-    var AUDIO_SFX = require.toUrl("./assets/pipe.wav");
     var CustomBookmarks = /** @class */ (function (_super) {
         __extends(CustomBookmarks, _super);
         function CustomBookmarks() {
@@ -49,18 +46,15 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         //--------------------------------------------------------------------------
         CustomBookmarks.prototype._renderBookmark = function (bookmark) {
             var _a, _b;
-            var active = bookmark.active, name = bookmark.name, thumbnail = bookmark.thumbnail;
+            var active = bookmark.active, name = bookmark.name;
             var bookmarkClasses = (_a = {},
                 _a[CSS.bookmarkActive] = active,
                 _a);
             var bookmarkIconClasses = (_b = {},
                 _b[CSS.bookmarkIconActive] = !!this._playingBookmarks[bookmark.name],
                 _b);
-            var imageSource = (thumbnail && thumbnail.url) || "";
-            var imageNode = imageSource ? (widget_1.tsx("div", { class: CSS.bookmarkContainer },
-                widget_1.tsx("img", { src: imageSource, alt: name, class: CSS.bookmarkImage }))) : (widget_1.tsx("span", { "aria-hidden": "true", class: this.classes(CSS.bookmarkIcon, CSS.customBookmarkIcon, bookmarkIconClasses) }));
             return (widget_1.tsx("li", { bind: this, "data-bookmark-item": bookmark, class: this.classes(CSS.bookmark, bookmarkClasses), onclick: this._goToBookmark, onkeydown: this._goToBookmark, tabIndex: 0, role: "button", title: i18n.goToBookmark, "aria-label": name },
-                imageNode,
+                widget_1.tsx("span", { "aria-hidden": "true", class: this.classes(CSS.bookmarkIcon, CSS.customBookmarkIcon, bookmarkIconClasses) }),
                 widget_1.tsx("span", { class: CSS.bookmarkName }, name)));
         };
         CustomBookmarks.prototype._goToBookmark = function (event) {
@@ -71,13 +65,14 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         };
         CustomBookmarks.prototype._play = function (bookmark) {
             var _this = this;
-            var sfx = new Audio(AUDIO_SFX);
-            sfx.play();
+            var sfx = new Audio(require.toUrl("./assets/pipe.wav"));
             this._playingBookmarks[bookmark.name] = true;
-            setTimeout(function () {
-                _this._playingBookmarks[bookmark.name] = false;
-                _this.scheduleRender();
-            }, 1000);
+            sfx.play().then(function () {
+                sfx.addEventListener("ended", function () {
+                    _this._playingBookmarks[bookmark.name] = false;
+                    _this.scheduleRender();
+                });
+            });
         };
         __decorate([
             widget_1.accessibleHandler()

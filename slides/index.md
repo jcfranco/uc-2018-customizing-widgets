@@ -19,12 +19,13 @@
 
 ---
 
-# Customizing Widgets
+# What we mean by customizing
 
-- Theming <!-- .element: class="fragment" data-fragment-index="1" -->
+- Theming
   - Changing styles: colors, sizing, font, etc.
-- Implementing widget in a different framework <!-- .element: class="fragment" data-fragment-index="2" -->
-- Altering presentation of a widget <!-- .element: class="fragment" data-fragment-index="3" -->
+- Altering presentation of a widget
+  - Custom UI
+- Implementing widget in a different framework
 
 ---
 
@@ -120,6 +121,7 @@ Before, you needed to
 ---
 
 # There is an easier way!
+
 <ol>
   <li>Clone the utility `jsapi-styles.git`</li>
   <li>Run `npm install`</li>

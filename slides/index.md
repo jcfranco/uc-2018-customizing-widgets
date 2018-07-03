@@ -326,12 +326,12 @@ Create a custom Locate widget view
 
 # Level II: Views Recap
 
-What have we learned about Widget Views? <!-- .element: class="fragment" data-fragment-index="0" -->
+What have we learned about Widget Views?
 
-- Face of the widget <!-- .element: class="fragment" data-fragment-index="2" -->
-- Present ViewModel logic <!-- .element: class="fragment" data-fragment-index="3" -->
-- ViewModel separation allows framework integration or custom views <!-- .element: class="fragment" data-fragment-index="4" -->
-- Downloadable on API docs <!-- .element: class="fragment" data-fragment-index="5" -->
+- Face of the widget
+- Present ViewModel logic
+- ViewModel separation allows framework integration or custom views
+- Views downloadable on API doc pages
 
 ---
 

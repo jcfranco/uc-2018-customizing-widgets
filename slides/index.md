@@ -67,19 +67,6 @@
 
 ---
 
-We use
-
-![Sass](img/sass-white.png)
-
-### to create our CSS.
-
-<img src="img/nodejs-new-pantone-black.png" height="80" style="margin-left:10px; margin-right: 10px;"/><!-- .element: class="fragment" data-fragment-index="1" -->
-<img src="img/grunt.svg" height="80" style="margin-left:10px; margin-right: 10px;"/><!-- .element: class="fragment" data-fragment-index="1" -->
-
-<small><a href="https://nodejs.org/">nodejs.org</a> | <a href="https://gruntjs.com/">gruntjs.com</a></small><!-- .element: class="fragment" data-fragment-index="1" -->
-
----
-
 ![Sass](img/sass-white.png)
 
 ### is a powerful scripting language for compiling CSS.
@@ -87,6 +74,15 @@ We use
 - It's modular. <!-- .element: class="fragment" data-fragment-index="1" -->
 - It's DRY. <!-- .element: class="fragment" data-fragment-index="2" -->
 - It makes theming easy. <!-- .element: class="fragment" data-fragment-index="3" -->
+
+---
+
+![Sass](img/sass-white.png)
+
+<img src="img/nodejs-new-pantone-black.png" height="80" style="margin-left:10px; margin-right: 10px;"/>
+<img src="img/grunt.svg" height="80" style="margin-left:10px; margin-right: 10px;"/>
+
+<small><a href="https://nodejs.org/">nodejs.org</a> | <a href="https://gruntjs.com/">gruntjs.com</a></small>
 
 ---
 
@@ -161,11 +157,6 @@ git clone https://github.com/jcfranco/interactive-design.git
 Edit your theme.<br/>
 `sass/my-theme/main.scss`
 
-<div>
-Optionally, edit your app.<br/>
-`preview/index.html`
-</div><!-- .element: class="fragment" data-fragment-index="1" -->
-
 ---
 
 # Step 4
@@ -182,6 +173,8 @@ Link your stylesheet in your app.
 ---
 
 # Let's have a look!
+
+<!-- how a variable is used throughout... -->
 
 ---
 

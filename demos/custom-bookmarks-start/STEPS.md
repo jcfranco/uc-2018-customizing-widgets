@@ -6,21 +6,24 @@ Please refer to the following for more information:
 
 - [Setting up TypeScript](https://developers.arcgis.com/javascript/latest/guide/typescript-setup/index.html)
 - [Widget Development](https://developers.arcgis.com/javascript/latest/guide/custom-widget/index.html)
-____________
 
-1. First we'll take a look at the main files that make up our demo:
+---
+
+1.  Before diving in, we'll take a look at the main files in our demo:
+
     - `index.html` - simple app setup: imports app and custom CSS
     - `main.ts` - simple app with a map and our custom widget
     - `CustomBookmarks.tsx` - widget extension boilerplate
     - `CustomBookmarks.css` - precooked widget CSS
 
-1. For the next step, we'll look at how the current Bookmarks widget works
+1.  For the next step, we'll look at how the current Bookmarks widget works
+
     - Go to [Bookmarks SDK](https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Bookmarks.html) and navigate to view file (TSX).
-        - all widget views are available on GitHub
-        - inside look at how we develop widgets
+      - all widget views are available on GitHub
+      - inside look at how we develop widgets
     - We'll focus on `render()`. For our demo, we want to modify the markup for individual basemap items, which is produced by `_renderBookmark`.
 
-1. Let's copy over `_renderBookmark` and some dependencies to finish setting up our custom widget.
+1.  Let's copy over `_renderBookmark` and some dependencies to finish setting up our custom widget.
 
     ```tsx
     //--------------------------------------------------------------------------
@@ -28,16 +31,16 @@ ____________
     //  Private Methods
     //
     //--------------------------------------------------------------------------
-    
+
     private _renderBookmark(bookmark: Bookmark): any {
       const { active, name, thumbnail } = bookmark;
-    
+
       const bookmarkClasses = {
         [CSS.bookmarkActive]: active
       };
-    
+
       const imageSource = (thumbnail && thumbnail.url) || "";
-    
+
       const imageNode = imageSource ? (
         <div class={CSS.bookmarkContainer}>
           <img src={imageSource} alt={name} class={CSS.bookmarkImage} />
@@ -45,7 +48,7 @@ ____________
       ) : (
         <span aria-hidden="true" class={this.classes(CSS.bookmarkIcon, CSS.widgetIcon)} />
       );
-    
+
       return (
         <li
           bind={this}
@@ -63,7 +66,7 @@ ____________
         </li>
       );
     }
-    
+
     @accessibleHandler()
     private _goToBookmark(event: Event): void {
       const node = event.currentTarget as Element;
@@ -77,19 +80,19 @@ ____________
     ```tsx
     // dojo
     import i18n = require("dojo/i18n!esri/widgets/Bookmarks/nls/Bookmarks");
-    
+
     // esri.core.accessorSupport
     import { declared, subclass } from "esri/core/accessorSupport/decorators";
-    
+
     // esri.widgets
     import Bookmarks = require("esri/widgets/Bookmarks");
-    
+
     // esri.widgets.Bookmarks
     import Bookmark = require("esri/widgets/Bookmarks/Bookmark");
-    
+
     // esri.widgets.support
     import { accessibleHandler, tsx } from "esri/widgets/support/widget";
-    
+
     const CSS = {
       bookmark: "esri-bookmarks__bookmark",
       bookmarkContainer: "esri-bookmarks__bookmark-container",
@@ -103,48 +106,24 @@ ____________
 
     Our code now compiles and renders as it originally did, so let's start customizing!
 
-1. Let's start by adding a method to play a sound effect when called
+1.  Let's start by adding a method to play a sound effect for a bookmark when clicked
 
     ```tsx
-    private _play(): void {
-      const sfx = new Audio(require.toUrl("./assets/pipe.wav"));
-      sfx.play();
-    }
-    ```
-
-1. Let's call this method when a bookmark is clicked in `_goToBookmark`.
-
-
-    ```tsx
-    @accessibleHandler()
-    private _goToBookmark(event: Event): void {
-      const node = event.currentTarget as Element;
-      const bookmark = node["data-bookmark-item"] as Bookmark;
-      this.viewModel.goTo(bookmark);
-  
-      this._play();
-    }
-    ```
-
-    *Demo Time*
-
-1. We want to update the styles when the sound is played, so let's update `_play` to keep track of playing bookmarks.
-
-    ```tsx
-    // update signature to accept bookmark
     private _play(bookmark: Bookmark): void {
       const sfx = new Audio(require.toUrl("./assets/pipe.wav"));
-  
-      // register bookmark as active 
+
+      // mark bookmark as having active sound
       this._playingBookmarks[bookmark.name] = true;
-  
-      // register bookmark as inactive when playback ends
-      sfx.play().then(() => {
-        sfx.addEventListener("ended", () => {
-          this._playingBookmarks[bookmark.name] = false;
-          this.scheduleRender();  // ensure rendering after updating bookmark status
-        });
+
+      // when audio ends, mark bookmark as not having active sound
+      sfx.addEventListener("ended", () => {
+        this._playingBookmarks[bookmark.name] = false;
+
+        // ensure rendering after updating bookmark status
+        this.scheduleRender();
       });
+
+      sfx.play();
     }
     ```
 
@@ -156,23 +135,38 @@ ____________
     //  Variables
     //
     //--------------------------------------------------------------------------
-  
-    private _playingBookmarks: HashMap<boolean> = {};  
+
+    private _playingBookmarks: HashMap<boolean> = {};
     ```
 
     **Note:** We have now updated the widget to play a sound effect whenever a bookmark is clicked and the bookmark is also marked as active during the sound effect playback. Let's add some visual flair to the demo.
 
-1. For our purposes, we want to always show an icon, so let's simplify `_renderBookmark` by removing the code to render bookmark thumbnails.
+1.  Let's call this method when a bookmark is clicked in `_goToBookmark`.
+
+    ```tsx
+    @accessibleHandler()
+    private _goToBookmark(event: Event): void {
+      const node = event.currentTarget as Element;
+      const bookmark = node["data-bookmark-item"] as Bookmark;
+      this.viewModel.goTo(bookmark);
+
+      this._play(bookmark);
+    }
+    ```
+
+    _Demo Time_
+
+1.  For our purposes, we want to always show an icon, so let's simplify `_renderBookmark` by removing the code to render bookmark thumbnails.
 
     ```tsx
     // thumbnail-less `_renderBookmark`
     private _renderBookmark(bookmark: Bookmark): any {
       const { active, name } = bookmark;
-  
+
       const bookmarkClasses = {
         [CSS.bookmarkActive]: active
       };
-  
+
       return (
         <li
           bind={this}
@@ -192,41 +186,32 @@ ____________
     }
     ```
 
-2. Now, let's modify the icon node and add a custom CSS class to replace `CSS.widgetIcon`.
+1.  Now, let's modify the icon node and add a custom CSS class to replace `CSS.widgetIcon`.
 
     ```tsx
-    <span
-      aria-hidden="true"
-      class={this.classes(CSS.bookmarkIcon, CSS.customBookmarkIcon)}
-    />
+    <span aria-hidden="true" class={this.classes(CSS.bookmarkIcon, CSS.customBookmarkIcon)} />
     ```
 
-    TypeScript will let us know that `CSS.customBookmarkIcon` isn't defined. Let's take care of that.
-
-    ```tsx
-    // custom
-    customBookmarkIcon: "esri-bookmarks__bookmark-icon--custom",
-    ```
-
-    If we look at our demo, we can see that our custom icon now shows up. Let's now add a dynamic class to toggle a CSS class when the bookmark's sound effect is playing.
+    Next, we'll add a dynamic class to toggle a CSS class when the bookmark's sound effect is playing.
 
     ```tsx
     const bookmarkIconClasses = {
       [CSS.bookmarkIconActive]: !!this._playingBookmarks[bookmark.name]
     };
-    
-    // ...
-    
-    <span
-      aria-hidden="true"
-      class={this.classes(CSS.bookmarkIcon, CSS.customBookmarkIcon, bookmarkIconClasses)}
-    />
+
+    <span aria-hidden="true" class={this.classes(CSS.bookmarkIcon, CSS.customBookmarkIcon, bookmarkIconClasses)} />;
     ```
 
-    Once again, TypeScript reminds us that we're referencing properties that don't exist on `CSS`.
+    Once again, TypeScript reminds us that we're referencing properties that don't exist on `CSS`, so let's take care of that.
 
     ```tsx
+    // custom
+    customBookmarkIcon: "esri-bookmarks__bookmark-icon--custom",
     bookmarkIconActive: "esri-bookmarks__bookmark-icon--active"
     ```
 
-    At this point we are done customizing, so let's take it for a spin. **shine get!** 🌟
+    At this point we are done customizing, so let's take it for a spin.
+
+    _Demo Time_
+
+    # shine get! 🌟

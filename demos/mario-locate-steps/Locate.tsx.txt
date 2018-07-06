@@ -72,9 +72,6 @@ import View = require("esri/views/View");
 // esri.widgets
 import Widget = require("esri/widgets/Widget");
 
-// esri.core
-import watchUtils = require("esri/core/watchUtils");
-
 // esri.widgets.Locate
 import LocateViewModel = require("esri/widgets/Locate/LocateViewModel");
 
@@ -95,8 +92,8 @@ const CSS = {
   hidden: "esri-hidden"
 };
 
-@subclass("demo.MarioLocate")
-class MarioLocate extends declared(Widget) {
+@subclass("esri.widgets.Locate")
+class Locate extends declared(Widget) {
   /**
    * Fires after the [locate()](#locate) method is called and succeeds.
    *
@@ -136,54 +133,7 @@ class MarioLocate extends declared(Widget) {
    */
   constructor(params?: any) {
     super();
-
-    const title = "It's-a me, Mario!";
-
-    const itsMeAudioSrc = require.toUrl("./wav/itsme.wav");
-    const marioImageSrc = require.toUrl("./img/mario-head.gif");
-
-    const content = `
-<div style="text-align:center;">
-  <img alt="${title}" height="150" src="${marioImageSrc}" />
-  <audio autoplay><source src="${itsMeAudioSrc}" type="audio/wav" />
-</div>
-`;
-
-    this.viewModel.graphic = new Graphic({
-      popupTemplate: {
-        title,
-        content
-      },
-      symbol: {
-        type: "picture-marker",
-        url: require.toUrl("./img/mario-map.gif"),
-        width: "32px",
-        height: "42px"
-      }
-    });
   }
-
-  postInitialize() {
-    this.own(
-      watchUtils.watch(this, "viewModel.state", (state, oldState) => {
-        if (state === "ready" && oldState === "locating") {
-          this._playAudio(["./wav/hello.wav"]);
-        }
-
-        if (state === "locating" && oldState === "ready") {
-          this._playAudio(["./wav/herewego.wav", "./wav/warp.wav"]);
-        }
-      })
-    );
-  }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Variables
-  //
-  //--------------------------------------------------------------------------
-
-  _audio: HTMLAudioElement = null;
 
   //--------------------------------------------------------------------------
   //
@@ -385,27 +335,35 @@ class MarioLocate extends declared(Widget) {
   locate(): void {}
 
   render() {
-    const { state } = this.viewModel;
+    const state = this.get("viewModel.state");
+    const isLocating = state === "locating";
 
-    const imagePath = state === "locating" ? "./img/warp.gif" : "./img/locate.png";
+    const rootClasses = {
+      [CSS.disabled]: state === "disabled",
+      [CSS.hidden]: state === "feature-unsupported"
+    };
 
-    const imageSrc = require.toUrl(imagePath);
-
-    const locate = "Locate Mario!";
-    const imageNode = <img alt={locate} class="demo-mario-locate__image" src={imageSrc} />;
+    const iconClasses = {
+      [CSS.loading]: isLocating,
+      [CSS.rotating]: isLocating,
+      [CSS.locate]: !isLocating
+    };
 
     return (
       <div
-        class="demo-mario-locate"
         bind={this}
+        class={CSS.base}
+        classes={rootClasses}
+        hidden={state === "feature-unsupported"}
         onclick={this._locate}
         onkeydown={this._locate}
-        hidden={state === "feature-unsupported"}
         role="button"
         tabIndex={0}
-        aria-label={locate}
+        aria-label={i18n.title}
+        title={i18n.title}
       >
-        {imageNode}
+        <span classes={iconClasses} aria-hidden="true" class={join(CSS.icon, CSS.locate)} />
+        <span class={CSS.text}>{i18n.title}</span>
       </div>
     );
   }
@@ -420,27 +378,6 @@ class MarioLocate extends declared(Widget) {
   private _locate() {
     this.locate();
   }
-
-  private _playAudio(playlist: string[]): void {
-    if (this._audio) {
-      this._audio.pause();
-      this._audio = null;
-    }
-
-    const audioPath = playlist[0];
-    const audio = new Audio(require.toUrl(audioPath));
-
-    audio.addEventListener("ended", () => {
-      playlist.shift();
-      if (playlist.length) {
-        this._playAudio(playlist);
-      }
-    });
-
-    this._audio = audio;
-
-    audio.play();
-  }
 }
 
-export = MarioLocate;
+export = Locate;

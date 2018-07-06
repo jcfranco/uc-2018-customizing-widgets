@@ -37,6 +37,8 @@
   </style>
 
   <script>
+    var locate;
+
     require([
       "esri/WebMap",
       "esri/views/MapView",
@@ -59,7 +61,7 @@
           map: map
         });
 
-        var locate = new MarioLocate({
+        locate = new MarioLocate({
           view: view,
           scale: 70000
         });

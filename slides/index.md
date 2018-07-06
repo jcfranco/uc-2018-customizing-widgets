@@ -19,12 +19,13 @@
 
 ---
 
-# Customizing Widgets
+# What we mean by customizing
 
-- Theming <!-- .element: class="fragment" data-fragment-index="1" -->
+- Theming
   - Changing styles: colors, sizing, font, etc.
-- Implementing widget in a different framework <!-- .element: class="fragment" data-fragment-index="2" -->
-- Altering presentation of a widget <!-- .element: class="fragment" data-fragment-index="3" -->
+- Altering presentation of a widget
+  - Custom UI
+- Implementing widget in a different framework
 
 ---
 
@@ -116,6 +117,7 @@ Before, you needed to
 ---
 
 # There is an easier way!
+
 <ol>
   <li>Clone the utility `jsapi-styles.git`</li>
   <li>Run `npm install`</li>
@@ -283,7 +285,7 @@ API Exploration
 # Level II: `LocateViewModel`
 
 ```ts
-interface LocateViewModel interface GeolocationPositioningProperties {
+interface LocateViewModel {
   readonly state: string;
   locate(): IPromise<Object>;
   graphic?: Graphic;
@@ -305,6 +307,7 @@ Lets create a custom widget view.
 Create a custom Locate widget view
 
 - [Demo Steps](../demos/mario-locate-steps/0.steps.md)
+- [Demo Steps GitHub](https://github.com/jcfranco/uc-2018-customizing-widgets/blob/master/demos/mario-locate-steps/0.steps.md)
 - [Demo Complete](../demos/mario-locate-complete/)
 - [Demo Start](../demos/mario-locate-start/)
 
@@ -316,12 +319,12 @@ Create a custom Locate widget view
 
 # Level II: Views Recap
 
-What have we learned about Widget Views? <!-- .element: class="fragment" data-fragment-index="0" -->
+What have we learned about Widget Views?
 
-- Face of the widget <!-- .element: class="fragment" data-fragment-index="2" -->
-- Present ViewModel logic <!-- .element: class="fragment" data-fragment-index="3" -->
-- ViewModel separation allows framework integration or custom views <!-- .element: class="fragment" data-fragment-index="4" -->
-- Downloadable on API docs <!-- .element: class="fragment" data-fragment-index="5" -->
+- Face of the widget
+- Present ViewModel logic
+- ViewModel separation allows framework integration or custom views
+- Views downloadable on API doc pages
 
 ---
 

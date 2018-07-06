@@ -175,6 +175,12 @@ body {
 .reveal code {
   font-family: monospace;
   text-transform: none; }
+.reveal code.code--bg {
+  background-color: rgba(0, 0, 0, 0.33);
+  padding: 0.2em 0.4em;
+  font-size: 0.8em;
+  border-radius: 4px;
+}
 
 .reveal pre code {
   display: block;

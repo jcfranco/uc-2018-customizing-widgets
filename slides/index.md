@@ -70,15 +70,8 @@
 
 ![Sass](img/sass-white.png)
 
-### is a powerful scripting language for compiling CSS.
-
-- It's modular. <!-- .element: class="fragment" data-fragment-index="1" -->
-- It's DRY. <!-- .element: class="fragment" data-fragment-index="2" -->
-- It makes theming easy. <!-- .element: class="fragment" data-fragment-index="3" -->
-
----
-
-![Sass](img/sass-white.png)
+### A powerful extension language for compiling CSS.
+<small><a href="https://sass-lang.com/">sass-lang.com</a></small>
 
 <img src="img/nodejs-new-pantone-black.png" height="80" style="margin-left:10px; margin-right: 10px;"/>
 <img src="img/grunt.svg" height="80" style="margin-left:10px; margin-right: 10px;"/>
@@ -87,7 +80,85 @@
 
 ---
 
-<h3 style="font-family:monospace;text-transform:uppercase;">Previously on Theming</h3>
+![Sass](img/sass-white.png)
+
+- It's modular. <!-- .element: class="fragment" data-fragment-index="1" -->
+- It's DRY. <!-- .element: class="fragment" data-fragment-index="2" -->
+- It looks like CSS. <!-- .element: class="fragment" data-fragment-index="3" -->
+
+---
+
+## Is this CSS or Sass?
+
+```
+  .esri-widget {
+    background-color: #fff;
+  }
+
+  .esri-menu {
+    background-color: #fff;
+  }
+
+```
+
+---
+
+
+## It's both!
+
+```
+  .esri-widget {
+    background-color: #fff;
+  }
+
+  .esri-menu {
+    background-color: #fff;
+  }
+
+```
+
+---
+
+## So how is Sass better?
+
+<p class="fragment">Variables.<br/><small>There is a lot more, but this is a good start.</small></p>
+
+<p class="fragment">Let's have a look at `background-color`.</p>
+
+---
+
+## Sass
+```
+  $background_color: #fff;
+
+  .esri-widget {
+    background-color: $background_color;
+  }
+
+  .esri-menu {
+    background-color: $background_color;
+  }
+
+```
+
+---
+
+## Resulting CSS
+
+```
+  .esri-widget {
+    background-color: #fff;
+  }
+
+  .esri-menu {
+    background-color: #fff;
+  }
+
+```
+
+---
+
+<h3 style="font-family:monospace;text-transform:uppercase;">Previously on API Theming</h3>
 <span style="font-family:monospace;text-transform:uppercase;">Life was hard.</span> <!-- .element: class="fragment" data-fragment-index="1" -->
 
 ---
@@ -108,7 +179,7 @@ Before, you needed to
 <ol>
   <li class="fragment">Get our theme utility.</li>
   <li class="fragment">Use the utility.</li>
-  <li class="fragment">Customize your theme.</li>
+  <li class="fragment">Edit your theme.</li>
   <li class="fragment">Then magic.<br/><img src="img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/></li>
 </ol>
 
@@ -116,67 +187,45 @@ Before, you needed to
 
 ---
 
-# There is an easier way!
-
-<ol>
-  <li>Clone the utility `jsapi-styles.git`</li>
-  <li>Run `npm install`</li>
-  <li>Edit <span style="font-weight:bold;">`sass/my-theme/main.scss`</span>.</li>
-  <li>See <span style="font-weight:bold;">`dist/my-theme/main.css`</span>.<br/><img src="img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/></li>
-</ol>
-<div class="fragment">You won't need the base stylesheet.</div>
-
----
-
-# Step 1
+## Step 1 : Get our theme utility.
 
 Clone the repo.<br/>
 <a href="https://github.com/jcfranco/jsapi-styles" target="_blank">https://github.com/jcfranco/jsapi-styles</a>
 
-<div>
 ```
-git clone https://github.com/jcfranco/interactive-design.git
+  git clone https://github.com/jcfranco/interactive-design.git
 ```
-</div><!-- .element: class="fragment" data-fragment-index="1" -->
+
+<img src="img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/>
 
 ---
 
-# Step 2
+## Step 2 : Use the utility.
 
-`npm install`
+<code class="code--bg">npm install</code>
 
-<div>
   - Installs the necessary bits.
   - Creates a sample theme directory.
-  - Compiles the CSS from the SCSS.
+  - Compiles CSS from any Sass theme directory.
   - Spins up a preview in your default browser.
-</div><!-- .element: class="fragment" data-fragment-index="1" -->
+
+<img src="img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/>
 
 ---
 
-# Step 3
+## Step 3 : Edit your theme.
 
-Edit your theme.<br/>
-`sass/my-theme/main.scss`
+<code class="code--bg">sass/my-theme/main.scss</code>
 
----
-
-# Step 4
-
-Host your stylesheet and any relevant assets.
-
-Link your stylesheet in your app.
-
-```
-<!-- In your app: -->
-<link href="path/to/your/theme/main.css" rel="stylesheet">
-```
+<img src="img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/>
 
 ---
 
-# Let's have a look!
+## Step 4 : Magic
 
-<!-- how a variable is used throughout... -->
+Let's have a look!
+
+<img src="img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/>
 
 ---
 

@@ -264,19 +264,20 @@ $background_color : #cc4b09;
 
 # Level II: Widget Composition
 
-Widgets are composed of Views & ViewModels <!-- .element: class="fragment" data-fragment-index="0" -->
+Widgets are composed of Views & ViewModels <!-- .element: class="fragment" data-fragment-index="1" -->
 
-- Reusable <!-- .element: class="fragment" data-fragment-index="1" -->
-- UI replacement <!-- .element: class="fragment" data-fragment-index="2" -->
-- Framework integration <!-- .element: class="fragment" data-fragment-index="3" -->
+- Benefits of View/ViewModel <!-- .element: class="fragment" data-fragment-index="2" -->
+  - Reusable
+  - UI replacement
+  - Framework integration
 
 ---
 
 # Level II: Views
 
 - Presentation of the Widget <!-- .element: class="fragment" data-fragment-index="1" -->
-- Uses ViewModel APIs to render the UI <!-- .element: class="fragment" data-fragment-index="2" -->
-- View-specific logic resides here <!-- .element: class="fragment" data-fragment-index="3" -->
+- Uses ViewModel APIs to render the UI <!-- .element: class="fragment" data-fragment-index="1" -->
+- View-specific logic resides here <!-- .element: class="fragment" data-fragment-index="1" -->
 
 ---
 
@@ -291,6 +292,8 @@ API Exploration
 
 # Level II: `LocateViewModel`
 
+Overview of `LocateViewModel`
+
 ```ts
 interface LocateViewModel {
   readonly state: string;
@@ -303,18 +306,11 @@ interface LocateViewModel {
 
 ---
 
-# Views: Let's customize!
+# Demo: Customize widget View
 
 Lets create a custom widget view.
 
----
-
-# Demo
-
-Create a custom Locate widget view
-
-- [Demo Steps](../demos/mario-locate-steps/0.steps.md)
-- [Demo Steps GitHub](https://github.com/jcfranco/uc-2018-customizing-widgets/blob/master/demos/mario-locate-steps/0.steps.md)
+- [Demo Steps](../demos/mario-locate-steps/1.html.md)
 - [Demo Complete](../demos/mario-locate-complete/)
 - [Demo Start](../demos/mario-locate-start/)
 

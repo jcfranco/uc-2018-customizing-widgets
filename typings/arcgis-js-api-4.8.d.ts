@@ -1,6 +1,7 @@
 // Type definitions for ArcGIS API for JavaScript 4.8
 // Project: http://js.arcgis.com
 // Definitions by: Esri <https://github.com/Esri>
+//                 Bjorn Svensson <https://github.com/bsvensson>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
@@ -624,7 +625,7 @@ declare namespace __esri {
    */
   interface config {
     /**
-     * The URL for font resources used by the [Font](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-Font.html#family) class with 2D WebGL enabled [FeatureLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) and [CSVLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html). To use your own hosted fonts, make sure to follow our naming conventions (e.g. "arial-unicode-ms").
+     * The URL for font resources used by the [Font](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-Font.html#family) class with 2D WebGL enabled [FeatureLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) and [CSVLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html). To use your own hosted fonts, make sure to follow our naming conventions (e.g. "arial-unicode-ms-bold").
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#fontsUrl)
      * 
@@ -679,6 +680,10 @@ declare namespace __esri {
 
   export const config: config;
 
+  export type AfterInterceptorCallback = (response: RequestResponse) => void;
+
+  export type BeforeInterceptorCallback = (params: any, requestOptions: RequestOptions) => any;
+
 
   export interface configRequest extends Object {
     /**
@@ -726,34 +731,36 @@ declare namespace __esri {
      */
     httpsDomains?: string[];
     /**
-     * Provides developers an opportunity to modify requests before or after they are sent. An array of interceptors that returns the first one that matches. If no urls are specified, will apply to all relevant requests.  Example:
+     * Allows developers to modify requests before or after they are sent. An array of interceptors that will return the first one that matches. If no urls are specified, will apply to all relevant requests.  Example:
      * ```js
-     * require(["esri/config"], function(esriConfig) {
+     * const featureLayerUrl = "http://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/0";
      * 
-     *    esriConfig.request.interceptors.push({
-     *      query: {
-     *        f: "json"
-     *      }
-     *    });
-     * 
-     *    esriConfig.request.interceptors.push({
-     *      before: function() {
-     *        return { f: "html" };
-     *      }
-     *    });
-     * 
-     *    esriConfig.request.interceptors.push({
-     *      responseData: {
-     *        d: "interceptResponseData"
-     *      }
-     *    });
-     * 
+     * esriConfig.request.interceptors.push({
+     *   // set the `urls` property to the URL of the FeatureLayer so that this
+     *   // interceptor only applies to requests made to the FeatureLayer URL
+     *   urls: featureLayerUrl,
+     *   // use the BeforeInterceptorCallback to check if the query of the
+     *   // FeatureLayer has a maxAllowableOffset property set.
+     *   // if so, then set the maxAllowableOffset to 0
+     *   before: function(params) {
+     *     if (params.requestOptions.query.maxAllowableOffset) {
+     *       params.requestOptions.query.maxAllowableOffset = 0;
+     *     }
+     *   },
+     *   // use the AfterInterceptorCallback to check if `ssl` is set to 'true'
+     *   // on the response to the request, if it's set to 'false', change
+     *   // the value to 'true' before returning the response
+     *   after: function(response) {
+     *     if (!response.ssl) {
+     *       response.ssl = true;
+     *     }
+     *   }
      * });
      * ```
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#request)
      */
-    interceptors?: configRequestInterceptors[];
+    interceptors?: RequestInterceptor[];
     /**
      * Maximum number of characters allowed in the URL for HTTP GET requests made by [request](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html). If this limit is exceeded, HTTP POST method will be used.
      * 
@@ -824,28 +831,6 @@ declare namespace __esri {
   }
 
 
-  export interface configRequestInterceptors extends Object {
-    /**
-     * Standard callback function that fires before the request is sent.
-     * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#request)
-     */
-    before?: any;
-    /**
-     * Appends a query statement to the request in the Query String Parameters of the header.
-     * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#request)
-     */
-    query?: any;
-    /**
-     * Hardcodes the response. Useful for controlling the response, for example to point to the service metadate, if the response returns something other than an error.
-     * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#request)
-     */
-    responseData?: any;
-  }
-
-
   export interface configRequestProxyRules extends Object {
     /**
      * The URL of the proxy.
@@ -909,6 +894,50 @@ declare namespace __esri {
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#workers)
      */
     packages?: any[];
+  }
+
+  /**
+   * Specifies the object used for intercepting and modifying requests made via [esriRequest](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html).
+   * 
+   * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#RequestInterceptor)
+   */
+  export interface RequestInterceptor extends Object {
+    /**
+     * Makes changes to the response after the request is sent, but before it's returned to the caller.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#RequestInterceptor)
+     */
+    after?: AfterInterceptorCallback;
+    /**
+     * Callback function that can make changes to the url or options before the request is sent.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#RequestInterceptor)
+     */
+    before?: BeforeInterceptorCallback;
+    /**
+     * Sets or adds headers into `requestOptions.headers`.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#RequestInterceptor)
+     */
+    headers?: any;
+    /**
+     * Appends a query statement to the request in the Query String Parameters of the header.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#RequestInterceptor)
+     */
+    query?: any;
+    /**
+     * Hardcodes the response. The request will not be sent. This is resolved as the response `data`.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#RequestInterceptor)
+     */
+    responseData?: any;
+    /**
+     * Specifies the url(s) to apply to the interceptors. If undefined, interceptors will apply to all relevant requests.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#RequestInterceptor)
+     */
+    urls?: string | RegExp | any[];
   }
 
 
@@ -5429,7 +5458,7 @@ declare namespace __esri {
      * 
      * @default null
      */
-    surfaceColor: any;
+    surfaceColor: Color;
 
     /**
      * Creates a deep clone of this object.
@@ -5506,7 +5535,7 @@ declare namespace __esri {
      * 
      * @default null
      */
-    surfaceColor?: any;
+    surfaceColor?: Color | number[] | string;
   }
 
   /**
@@ -6947,15 +6976,20 @@ declare namespace __esri {
      */
     fields: Field[];
     /**
-     * The label definition for this layer, specified as an array of [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html). Use this property to specify labeling properties for the layer.  For labels to display in the view, the [labelsVisible](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html#labelsVisible) property of this layer must be set to `true`. 
-     * > **Known Limitations**  Labeling is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Labeling is supported in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) when [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) is enabled.  Each graphic can have only one label. Multiple [Label classes](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html) with different [where](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html#where) clauses can be used to have different label styles on different features that belong to the same layer (for example blue labels for lakes and green labels for parks).
+     * The label definition for this layer, specified as an array of [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html). Use this property to specify labeling properties for the layer.  For labels to display in the view, the [labelsVisible](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html#labelsVisible) property of this layer must be set to `true`.  Multiple Label classes with different `where` clauses can be used to define several labels with varying styles on the same feature. Likewise, multiple label classes may be used to label different types of features (for example blue labels for lakes and green labels for parks). 
+     * > **Known Limitations** 
+     *   * WebGL must be enabled in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) for labels to display.
+     *   * Currently only one [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html) is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html#labelingInfo)
      */
     labelingInfo: LabelClass[];
     /**
      * Indicates whether to display labels for this layer. If `true`, labels will appear as defined in the [labelingInfo](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html#labelingInfo) property. 
-     * > **Known Limitations**  Labeling is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Labeling is supported in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) when [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) is enabled.
+     * > **Known Limitations** 
+     *   * WebGL must be enabled in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) for labels to display.
+     *   * Currently only one [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html) is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
+     *   * Currently the `labelsVisible` property must be explicitly set to `true` for labels to be printed.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html#labelsVisible)
      * 
@@ -7049,6 +7083,14 @@ declare namespace __esri {
      */
     url: string;
 
+    /**
+     * Creates query parameters that can be used to fetch features that satisfy the layer's current filters, and definitions.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html#createQuery)
+     * 
+     * 
+     */
+    createQuery(): Query;
     /**
      * Executes a [Query](https://developers.arcgis.com/javascript/latest/api-reference/esri-tasks-support-Query.html) against the CSV data and returns the [Extent](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Extent.html) of features that satisfy the query. If no parameters are specified, then the extent and count of all features satisfying the layer's configuration/filters are returned. 
      * > **Known Limitations** 
@@ -7179,15 +7221,20 @@ declare namespace __esri {
      */
     fields?: FieldProperties[];
     /**
-     * The label definition for this layer, specified as an array of [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html). Use this property to specify labeling properties for the layer.  For labels to display in the view, the [labelsVisible](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html#labelsVisible) property of this layer must be set to `true`. 
-     * > **Known Limitations**  Labeling is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Labeling is supported in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) when [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) is enabled.  Each graphic can have only one label. Multiple [Label classes](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html) with different [where](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html#where) clauses can be used to have different label styles on different features that belong to the same layer (for example blue labels for lakes and green labels for parks).
+     * The label definition for this layer, specified as an array of [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html). Use this property to specify labeling properties for the layer.  For labels to display in the view, the [labelsVisible](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html#labelsVisible) property of this layer must be set to `true`.  Multiple Label classes with different `where` clauses can be used to define several labels with varying styles on the same feature. Likewise, multiple label classes may be used to label different types of features (for example blue labels for lakes and green labels for parks). 
+     * > **Known Limitations** 
+     *   * WebGL must be enabled in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) for labels to display.
+     *   * Currently only one [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html) is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html#labelingInfo)
      */
     labelingInfo?: LabelClassProperties[];
     /**
      * Indicates whether to display labels for this layer. If `true`, labels will appear as defined in the [labelingInfo](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html#labelingInfo) property. 
-     * > **Known Limitations**  Labeling is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Labeling is supported in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) when [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) is enabled.
+     * > **Known Limitations** 
+     *   * WebGL must be enabled in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) for labels to display.
+     *   * Currently only one [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html) is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
+     *   * Currently the `labelsVisible` property must be explicitly set to `true` for labels to be printed.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html#labelsVisible)
      * 
@@ -7757,15 +7804,22 @@ declare namespace __esri {
      */
     historicMoment: Date;
     /**
-     * The label definition for this layer, specified as an array of [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html). Use this property to specify labeling properties for the layer such as label expression, placement, and size.   For labels to display in the view, the [labelsVisible](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#labelsVisible) property of this layer must be set to `true`. 
-     * > **Known Limitations**  Labeling is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Labeling is supported in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) when: [WebGL](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-rendering) is enabled, and FeatureLayers are created from either feature services hosted on ArcGIS Online, or from non-hosted enterprise services from version 10.6.1 or later of ArcGIS Server.  Each graphic can have only one label. Multiple [Label classes](esri-layers-support-LabelClass.html) with different [where](esri-layers-support-LabelClass.html#where) clauses can be used to have different label styles on different features that belong to the same layer (for example blue labels for lakes and green labels for parks).
+     * The label definition for this layer, specified as an array of [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html). Use this property to specify labeling properties for the layer such as label expression, placement, and size.  The [labelsVisible](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#labelsVisible) property of this layer must be set to `true` for labels to display in the view.  Multiple Label classes with different `where` clauses can be used to define several labels with varying styles on the same feature. Likewise, multiple label classes may be used to label different types of features (for example blue labels for lakes and green labels for parks). 
+     * > **Known Limitations** 
+     *   * [WebGL](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-rendering) must be enabled in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) for labels to display. Be sure to review the [WebGL limitations](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-limitations).
+     *   * Currently only FeatureLayers with point and polygon geometries are supported.
+     *   * Currently only one [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html) is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#labelingInfo)
      */
     labelingInfo: LabelClass[];
     /**
      * Indicates whether to display labels for this layer. If `true`, labels will appear as defined in the [labelingInfo](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#labelingInfo) property. 
-     * > **Known Limitations**  Labeling is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Labeling is supported in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) when: [WebGL](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-rendering) is enabled, and FeatureLayers are created from either feature services hosted on ArcGIS Online, or from non-hosted enterprise services from version 10.6.1 or later of ArcGIS Server.
+     * > **Known Limitations** 
+     *   * [WebGL](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-rendering) must be enabled in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) for labels to display. Be sure to review the [WebGL limitations](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-limitations).
+     *   * Currently only FeatureLayers with point and polygon geometries are supported.
+     *   * Currently only one [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html) is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
+     *   * Currently the `labelsVisible` property must be explicitly set to `true` for labels to be printed.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#labelsVisible)
      * 
@@ -8064,15 +8118,22 @@ declare namespace __esri {
      */
     historicMoment?: DateProperties;
     /**
-     * The label definition for this layer, specified as an array of [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html). Use this property to specify labeling properties for the layer such as label expression, placement, and size.   For labels to display in the view, the [labelsVisible](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#labelsVisible) property of this layer must be set to `true`. 
-     * > **Known Limitations**  Labeling is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Labeling is supported in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) when: [WebGL](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-rendering) is enabled, and FeatureLayers are created from either feature services hosted on ArcGIS Online, or from non-hosted enterprise services from version 10.6.1 or later of ArcGIS Server.  Each graphic can have only one label. Multiple [Label classes](esri-layers-support-LabelClass.html) with different [where](esri-layers-support-LabelClass.html#where) clauses can be used to have different label styles on different features that belong to the same layer (for example blue labels for lakes and green labels for parks).
+     * The label definition for this layer, specified as an array of [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html). Use this property to specify labeling properties for the layer such as label expression, placement, and size.  The [labelsVisible](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#labelsVisible) property of this layer must be set to `true` for labels to display in the view.  Multiple Label classes with different `where` clauses can be used to define several labels with varying styles on the same feature. Likewise, multiple label classes may be used to label different types of features (for example blue labels for lakes and green labels for parks). 
+     * > **Known Limitations** 
+     *   * [WebGL](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-rendering) must be enabled in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) for labels to display. Be sure to review the [WebGL limitations](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-limitations).
+     *   * Currently only FeatureLayers with point and polygon geometries are supported.
+     *   * Currently only one [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html) is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#labelingInfo)
      */
     labelingInfo?: LabelClassProperties[];
     /**
      * Indicates whether to display labels for this layer. If `true`, labels will appear as defined in the [labelingInfo](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#labelingInfo) property. 
-     * > **Known Limitations**  Labeling is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Labeling is supported in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) when: [WebGL](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-rendering) is enabled, and FeatureLayers are created from either feature services hosted on ArcGIS Online, or from non-hosted enterprise services from version 10.6.1 or later of ArcGIS Server.
+     * > **Known Limitations** 
+     *   * [WebGL](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-rendering) must be enabled in 2D [MapViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) for labels to display. Be sure to review the [WebGL limitations](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#webgl-limitations).
+     *   * Currently only FeatureLayers with point and polygon geometries are supported.
+     *   * Currently only one [LabelClass](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html) is supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
+     *   * Currently the `labelsVisible` property must be explicitly set to `true` for labels to be printed.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html#labelsVisible)
      * 
@@ -10546,7 +10607,8 @@ declare namespace __esri {
      */
     elevationInfo: SceneLayerElevationInfo;
     /**
-     * Configures the method for decluttering overlapping features in the view. If this property is not set (or set to `null`), every feature is drawn individually.  This property is only supported for point scene layers with non-draped [Icon](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-IconSymbol3DLayer.html) or [Text](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol3DLayer.html) symbol layers.  [![declutter](https://developers.arcgis.com/javascript/latest/assets/img/samples/city-points-declutter.gif)](https://developers.arcgis.com/javascript/latest/sample-code/visualization-point-styles/index.html)
+     * Configures the method for decluttering overlapping features in the view. If this property is not set (or set to `null`), every feature is drawn individually.  This property is only supported for point scene layers with non-draped [Icon](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-IconSymbol3DLayer.html) or [Text](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol3DLayer.html) symbol layers.  [![declutter](https://developers.arcgis.com/javascript/latest/assets/img/samples/city-points-declutter.gif)](https://developers.arcgis.com/javascript/latest/sample-code/visualization-point-styles/index.html) 
+     * > **Known Limitation**  When applying featureReduction on a point SceneLayer layer updates are slow. This will be addressed in upcoming releases.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-SceneLayer.html#featureReduction)
      */
@@ -10718,7 +10780,8 @@ declare namespace __esri {
      */
     elevationInfo?: SceneLayerElevationInfo;
     /**
-     * Configures the method for decluttering overlapping features in the view. If this property is not set (or set to `null`), every feature is drawn individually.  This property is only supported for point scene layers with non-draped [Icon](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-IconSymbol3DLayer.html) or [Text](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol3DLayer.html) symbol layers.  [![declutter](https://developers.arcgis.com/javascript/latest/assets/img/samples/city-points-declutter.gif)](https://developers.arcgis.com/javascript/latest/sample-code/visualization-point-styles/index.html)
+     * Configures the method for decluttering overlapping features in the view. If this property is not set (or set to `null`), every feature is drawn individually.  This property is only supported for point scene layers with non-draped [Icon](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-IconSymbol3DLayer.html) or [Text](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol3DLayer.html) symbol layers.  [![declutter](https://developers.arcgis.com/javascript/latest/assets/img/samples/city-points-declutter.gif)](https://developers.arcgis.com/javascript/latest/sample-code/visualization-point-styles/index.html) 
+     * > **Known Limitation**  When applying featureReduction on a point SceneLayer layer updates are slow. This will be addressed in upcoming releases.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-SceneLayer.html#featureReduction)
      */
@@ -11733,7 +11796,7 @@ declare namespace __esri {
      */
     labelExpression: string;
     /**
-     * Defines the content of label text for [FeatureLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html). If working with [MapImageLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-MapImageLayer.html), use [labelExpression](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html#labelExpression) instead.  Attribute values may be included in label expressions. To include an attribute value in a label, wrap the name of the field in curly braces. See the example snippet below.
+     * Defines the content of label text for [FeatureLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html). If working with [MapImageLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-MapImageLayer.html), use [labelExpression](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html#labelExpression) instead.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html#labelExpressionInfo)
      */
@@ -11741,11 +11804,9 @@ declare namespace __esri {
     /**
      * The position of the label. Possible values are based on the feature type. This property requires a value.  **Possible Values (Points):** above-center | above-left | above-right | below-center | below-left | below-right | center-center | center-left | center-right  **Possible Values (Polylines):**  above-after | above-along | above-before | above-start | above-end | below-after | below-along | below-before | below-start | below-end | center-after | center-along | center-before | center-start | center-end  **Possible Values (Polygons):** always-horizontal 
      * > **Known Limitations** 
-     *   * Currently, if the label has a [line callout](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-callouts-LineCallout3D.html) then only "above-center" is supported.
-     *   * 3D layers only support label placement for [Points](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Point.html).
-     *   * 2D FeatureLayers only support label placement for [Points](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Point.html) and [Polygons](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Polygon.html).
-     *   
-     *   
+     *   * Currently, if the label has a [line callout](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-callouts-LineCallout3D.html) in a 3D SceneView, then only `above-center` is supported.
+     *   * Label placement only applies to [Point](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Point.html) layers in 3D SceneViews.
+     *   * FeatureLayers only support labeling for [Point](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Point.html) and [Polygon](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Polygon.html) geometries rendered with WebGL.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html#labelPlacement)
      * 
@@ -11800,7 +11861,7 @@ declare namespace __esri {
 
   interface LabelClassConstructor {
     /**
-     * Defines label expressions, symbols, scale ranges, label priorities, and sets of label placement options for different groups of labels on a layer.
+     * Defines label expressions, symbols, scale ranges, label priorities, and label placement options for labels on a layer.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html)
      */
@@ -11820,7 +11881,7 @@ declare namespace __esri {
      */
     labelExpression?: string;
     /**
-     * Defines the content of label text for [FeatureLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html). If working with [MapImageLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-MapImageLayer.html), use [labelExpression](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html#labelExpression) instead.  Attribute values may be included in label expressions. To include an attribute value in a label, wrap the name of the field in curly braces. See the example snippet below.
+     * Defines the content of label text for [FeatureLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html). If working with [MapImageLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-MapImageLayer.html), use [labelExpression](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html#labelExpression) instead.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html#labelExpressionInfo)
      */
@@ -11828,11 +11889,9 @@ declare namespace __esri {
     /**
      * The position of the label. Possible values are based on the feature type. This property requires a value.  **Possible Values (Points):** above-center | above-left | above-right | below-center | below-left | below-right | center-center | center-left | center-right  **Possible Values (Polylines):**  above-after | above-along | above-before | above-start | above-end | below-after | below-along | below-before | below-start | below-end | center-after | center-along | center-before | center-start | center-end  **Possible Values (Polygons):** always-horizontal 
      * > **Known Limitations** 
-     *   * Currently, if the label has a [line callout](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-callouts-LineCallout3D.html) then only "above-center" is supported.
-     *   * 3D layers only support label placement for [Points](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Point.html).
-     *   * 2D FeatureLayers only support label placement for [Points](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Point.html) and [Polygons](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Polygon.html).
-     *   
-     *   
+     *   * Currently, if the label has a [line callout](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-callouts-LineCallout3D.html) in a 3D SceneView, then only `above-center` is supported.
+     *   * Label placement only applies to [Point](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Point.html) layers in 3D SceneViews.
+     *   * FeatureLayers only support labeling for [Point](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Point.html) and [Polygon](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Polygon.html) geometries rendered with WebGL.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html#labelPlacement)
      * 
@@ -11879,7 +11938,7 @@ declare namespace __esri {
 
   export interface LabelClassLabelExpressionInfo extends Object {
     /**
-     * The expression defining the content of the label text.  **Deprecated as of v4.5. Use `expression` instead.**
+     * The SQL expression defining the content of the label text.  **Deprecated as of v4.5. Use `expression` instead.**
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html#labelExpressionInfo)
      */
@@ -24151,106 +24210,137 @@ declare namespace __esri {
      * 
      * @param url The request URL.
      * @param options An object with the following properties that describe the request.
-     * @param options.callbackParamName Name of the callback parameter (a special service parameter) to be specified when requesting data in JSONP format. It is ignored for all other data formats. For ArcGIS services the value is always `callback`.
-     * @param options.query If the request URL points to a web server that requires parameters, specify them here.
-     * @param options.responseType Response format. When this value is `image` the `method` and `timeout` options are ignored.  **Possible Values:** json | xml | text | blob | array-buffer | document | image
-     * @param options.headers Headers to use for the request. This is an object whose property names are header names. This is not applicable for non-XHR requests.
-     * @param options.timeout Indicates the amount of time in milliseconds to wait for a response from the server. Set to `0` to wait for the response indefinitely. This option is ignored when `responseType = "image"`.
-     * @param options.method Indicates if the request should be made using the HTTP POST method. By default, this is determined automatically based on the request size. This option is ignored when `responseType = "image"`.  **Possible Values:** auto | post
-     * @param options.body If uploading a file, specify the form data or element used to submit the file here. If a form element is specified, the parameters of the `query` will be added to the URL. If not specified, then query parameters will only be added to the URL when a GET request is used. If POST is used, then query parameters will be added to the body.
-     * @param options.useProxy Indicates the request should use the proxy. By default this is determined automatically based on the domain of the request url.
-     * @param options.cacheBust Indicates whether to send an extra query parameter to ensure the server doesn't supply cached values.
-     * @param options.allowImageDataAccess Indicates whether apps are allowed to read image data (when used with Canvas) from images hosted on third-party sites. Only applicable when `responseType = "image"`.
-     * @param options.authMode 
-     * Indicates if and how requests to ArcGIS Services are authenticated. Only applicable when [`esriConfig.request.useIdentity = true`](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#request). 
-     * 
-     * | Known Value | Description |
-     * |-------------|-------------|
-     * | auto |  The user will be signed in when a secure resource is requested. |
-     * | anonymous | An error will be returned when a secure resource is requested. |
-     * | immediate | The user will be signed in before the resource is requested. |
-     * | no-prompt | Checks for whether the user is already signed in. If so, no additional prompts display for sign-in. |
      * 
      */
-    esriRequest(url: string, options?: requestEsriRequestOptions): IPromise<any>;
+    esriRequest(url: string, options?: RequestOptions): IPromise<RequestResponse>;
   }
 
   const __requestMapped: request;
   export const request: typeof __requestMapped.esriRequest;
 
 
+  /**
+   * The specification of the [details object](https://developers.arcgis.com/javascript/latest/api-reference/esri-core-Error.html#details) returned in an [Error](https://developers.arcgis.com/javascript/latest/api-reference/esri-core-Error.html) object.
+   * 
+   * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#EsriErrorDetails)
+   */
+  export interface EsriErrorDetails extends Object {
+    /**
+     * A function to retrieve headers sent from the server.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#EsriErrorDetails)
+     */
+    getHeader: GetHeader;
+    /**
+     * The status of the http request.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#EsriErrorDetails)
+     */
+    httpStatus: number;
+    /**
+     * The error message code.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#EsriErrorDetails)
+     */
+    messageCode: string;
+    /**
+     * Additional error message(s).
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#EsriErrorDetails)
+     */
+    messages: string[];
+    /**
+     * The query parameters sent with the http request.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#EsriErrorDetails)
+     */
+    requestOptions: any;
+    /**
+     * Indicates if the request required https.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#EsriErrorDetails)
+     */
+    ssl: boolean;
+    /**
+     * The error message subcode.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#EsriErrorDetails)
+     */
+    subCode: number;
+    /**
+     * The URL of the request that returned an error message.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#EsriErrorDetails)
+     */
+    url: string;
+  }
 
-  export interface requestEsriRequestOptions extends Object {
+  export type GetHeader = (headerName: string) => string;
+
+  /**
+   * An object with the following properties that describe the request.
+   * 
+   * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
+   */
+  export interface RequestOptions extends Object {
+    /**
+     * Indicates if the request should be made using the HTTP POST method. By default, this is determined automatically based on the request size. This option is ignored when `responseType = "image"`.  **Possible Values:** auto | post
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
+     */
+    method?: string;
     /**
      * Name of the callback parameter (a special service parameter) to be specified when requesting data in JSONP format. It is ignored for all other data formats. For ArcGIS services the value is always `callback`.
      * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#esriRequest)
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
      */
     callbackParamName?: string;
     /**
-     * If the request URL points to a web server that requires parameters, specify them here.
-     * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#esriRequest)
-     */
-    query?: any;
-    /**
      * Response format. When this value is `image` the `method` and `timeout` options are ignored.  **Possible Values:** json | xml | text | blob | array-buffer | document | image
      * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#esriRequest)
-     * 
-     * @default json
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
      */
     responseType?: string;
     /**
      * Headers to use for the request. This is an object whose property names are header names. This is not applicable for non-XHR requests.
      * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#esriRequest)
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
      */
     headers?: any;
     /**
      * Indicates the amount of time in milliseconds to wait for a response from the server. Set to `0` to wait for the response indefinitely. This option is ignored when `responseType = "image"`.
      * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#esriRequest)
-     * 
-     * @default 60000
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
      */
     timeout?: number;
     /**
-     * Indicates if the request should be made using the HTTP POST method. By default, this is determined automatically based on the request size. This option is ignored when `responseType = "image"`.  **Possible Values:** auto | post
+     * If the request URL points to a web server that requires parameters, specify them here.
      * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#esriRequest)
-     * 
-     * @default auto
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
      */
-    method?: string;
+    query?: any;
     /**
      * If uploading a file, specify the form data or element used to submit the file here. If a form element is specified, the parameters of the `query` will be added to the URL. If not specified, then query parameters will only be added to the URL when a GET request is used. If POST is used, then query parameters will be added to the body.
      * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#esriRequest)
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
      */
     body?: FormData | HTMLFormElement | string;
     /**
      * Indicates the request should use the proxy. By default this is determined automatically based on the domain of the request url.
      * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#esriRequest)
-     * 
-     * @default false
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
      */
     useProxy?: boolean;
     /**
      * Indicates whether to send an extra query parameter to ensure the server doesn't supply cached values.
      * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#esriRequest)
-     * 
-     * @default false
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
      */
     cacheBust?: boolean;
     /**
      * Indicates whether apps are allowed to read image data (when used with Canvas) from images hosted on third-party sites. Only applicable when `responseType = "image"`.
      * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#esriRequest)
-     * 
-     * @default false
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
      */
     allowImageDataAccess?: boolean;
     /**
@@ -24264,11 +24354,47 @@ declare namespace __esri {
      * | no-prompt | Checks for whether the user is already signed in. If so, no additional prompts display for sign-in. |
      * 
      * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#esriRequest)
-     * 
-     * @default auto
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions)
      */
     authMode?: string;
+  }
+
+  /**
+   * Returns a promise that resolves to an object with the following specification. If the request returns an [Error](https://developers.arcgis.com/javascript/latest/api-reference/esri-core-Error.html), the error object will include the details specified in [EsriErrorDetails](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#EsriErrorDetails).
+   * 
+   * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestResponse)
+   */
+  export interface RequestResponse extends Object {
+    /**
+     * The requested data. Should match the `responseType` with the data return type. Possible types are: [json](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object), [xml](https://developer.mozilla.org/en-US/docs/Web/API/XMLDocument), [text](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob), [array-buffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer), [document](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDocument), and [image](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement).
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestResponse)
+     */
+    data?: any;
+    /**
+     * The options specified by the user in the data request. See [RequestOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestOptions) for available properties.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestResponse)
+     */
+    requestOptions?: RequestOptions;
+    /**
+     * If ssl is enabled or not.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestResponse)
+     */
+    ssl?: boolean;
+    /**
+     * The URL used to request the data.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestResponse)
+     */
+    url?: string;
+    /**
+     * Method for getting a header sent from the server.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-request.html#RequestResponse)
+     */
+    getHeader?: GetHeader;
   }
 
   interface ActionBase {
@@ -24991,8 +25117,7 @@ declare namespace __esri {
      */
     decoration: "underline" | "line-through" | "none";
     /**
-     * The font family of the text. To use a custom font with WebGL enabled 2D layers, set [config](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#fontsUrl) to point to your hosted fonts. 
-     * > **Known Limitations**  See the [Labeling Guide topic](https://developers.arcgis.com/javascript/latest/guide/labeling/index.html) for support for 2D WebGL enabled [FeatureLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) and [CSVLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html).
+     * The font family of the text. The possible values are dependent upon the: layer type, rendering mechanism, and if you working with a [MapView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) or [SceneView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). See the [Labeling guide page](https://developers.arcgis.com/javascript/latest/guide/labeling/index.html) for detailed explanation.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-Font.html#family)
      * 
@@ -25008,7 +25133,7 @@ declare namespace __esri {
      */
     size: number;
     /**
-     * The text style.  **Possible Values:** normal | italic | oblique 
+     * The text style. Specifies whether a font should be styled: normal, italic, or oblique.  **Possible Values:** normal | italic | oblique 
      * > **Known Limitations**  `oblique` is not supported in 2D WebGL enabled [FeatureLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) and [CSVLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-Font.html#style)
@@ -25017,7 +25142,7 @@ declare namespace __esri {
      */
     style: "normal" | "italic" | "oblique";
     /**
-     * The text weight.  **Possible Values:** normal | bold | bolder | lighter 
+     * The text weight. Specifies the level of boldness.  **Possible Values:** normal | bold | bolder | lighter 
      * > **Known Limitations**  `bolder` and `lighter` are not supported in 2D WebGL enabled [FeatureLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) and [CSVLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-Font.html#weight)
@@ -25037,11 +25162,7 @@ declare namespace __esri {
   }
 
   interface FontConstructor {
-    /**
-     * The font used to display [text symbols](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html) added to the [graphics layer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-GraphicsLayer.html).
-     * 
-     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-Font.html)
-     */
+
 
     new(properties?: FontProperties): Font;
 
@@ -25061,8 +25182,7 @@ declare namespace __esri {
      */
     decoration?: "underline" | "line-through" | "none";
     /**
-     * The font family of the text. To use a custom font with WebGL enabled 2D layers, set [config](https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html#fontsUrl) to point to your hosted fonts. 
-     * > **Known Limitations**  See the [Labeling Guide topic](https://developers.arcgis.com/javascript/latest/guide/labeling/index.html) for support for 2D WebGL enabled [FeatureLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) and [CSVLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html).
+     * The font family of the text. The possible values are dependent upon the: layer type, rendering mechanism, and if you working with a [MapView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) or [SceneView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). See the [Labeling guide page](https://developers.arcgis.com/javascript/latest/guide/labeling/index.html) for detailed explanation.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-Font.html#family)
      * 
@@ -25078,7 +25198,7 @@ declare namespace __esri {
      */
     size?: number | string;
     /**
-     * The text style.  **Possible Values:** normal | italic | oblique 
+     * The text style. Specifies whether a font should be styled: normal, italic, or oblique.  **Possible Values:** normal | italic | oblique 
      * > **Known Limitations**  `oblique` is not supported in 2D WebGL enabled [FeatureLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) and [CSVLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-Font.html#style)
@@ -25087,7 +25207,7 @@ declare namespace __esri {
      */
     style?: "normal" | "italic" | "oblique";
     /**
-     * The text weight.  **Possible Values:** normal | bold | bolder | lighter 
+     * The text weight. Specifies the level of boldness.  **Possible Values:** normal | bold | bolder | lighter 
      * > **Known Limitations**  `bolder` and `lighter` are not supported in 2D WebGL enabled [FeatureLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) and [CSVLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-Font.html#weight)
@@ -26891,7 +27011,7 @@ declare namespace __esri {
      */
     haloSize: number;
     /**
-     * The horizontal alignment of the text with respect to the graphic.  **Possible Values:** left | right | center | justify 
+     * Adjusts the horizontal alignment of the text in multi-line labels.  **Possible Values:** left | right | center | justify 
      * > **Known Limitations**  This property is currently not supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html#horizontalAlignment)
@@ -26929,7 +27049,7 @@ declare namespace __esri {
      */
     readonly type: "text";
     /**
-     * The vertical alignment of the text with respect to the graphic.  **Possible Values:** baseline | top | middle | bottom 
+     * Adjusts the vertical alignment of the text.  **Possible Values:** baseline | top | middle | bottom 
      * > **Known Limitations**  This property is currently not supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html#verticalAlignment)
@@ -26968,7 +27088,7 @@ declare namespace __esri {
 
   interface TextSymbolConstructor {
     /**
-     * Text symbols are used to define the graphic for displaying labels on a [FeatureLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html). With this class, you may alter the [color](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html#color), [font](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html#font), [halo](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html#haloSize), and other properties of the label graphic.
+     * Text symbols are used to define the graphic for displaying labels on a [FeatureLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html), [CSVLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html), and [Sublayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-Sublayer.html), in a 2D [MapView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html). Text symbols can also be used to define the symbol property of [Graphic](https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html). With this class, you may alter the [color](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html#color), [font](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html#font), [halo](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html#haloSize), and other properties of the label graphic.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html)
      */
@@ -27038,7 +27158,7 @@ declare namespace __esri {
      */
     haloSize?: number | string;
     /**
-     * The horizontal alignment of the text with respect to the graphic.  **Possible Values:** left | right | center | justify 
+     * Adjusts the horizontal alignment of the text in multi-line labels.  **Possible Values:** left | right | center | justify 
      * > **Known Limitations**  This property is currently not supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html#horizontalAlignment)
@@ -27070,7 +27190,7 @@ declare namespace __esri {
      */
     text?: string;
     /**
-     * The vertical alignment of the text with respect to the graphic.  **Possible Values:** baseline | top | middle | bottom 
+     * Adjusts the vertical alignment of the text.  **Possible Values:** baseline | top | middle | bottom 
      * > **Known Limitations**  This property is currently not supported in 3D [SceneViews](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html).
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-symbols-TextSymbol.html#verticalAlignment)
@@ -39097,6 +39217,257 @@ declare namespace __esri {
     mode?: string;
   }
 
+  export class BaseLayerView2D {
+    /**
+     * References the layer this [LayerView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-layers-LayerView.html) represents.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#layer)
+     */
+    layer: Layer;
+    /**
+     * The array of [Tile](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#Tile) objects computed to cover the MapView's visible area. This array is updated when the view is animating or the user is interacting with it. Then if tiles have been added or removed, [tilesChanged()](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#tilesChanged) is called.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#tiles)
+     */
+    tiles: Tile[];
+    /**
+     * References the [MapView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) this [LayerView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-layers-LayerView.html) belongs to.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#view)
+     */
+    view: MapView;
+
+    /**
+     * Method called when after the [LayerView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-layers-LayerView.html) is created and right before it's asked to draw the layer's content. Typically this method is implemented to start watching property changes on the layer for example.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#attach)
+     * 
+     * 
+     */
+    attach(): void;
+    /**
+     * Method called after the layer is removed and the [LayerView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-layers-LayerView.html) is about to be removed. Typically, this method is implemented to free resources like watchers.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#detach)
+     * 
+     * 
+     */
+    detach(): void;
+    /**
+     * The method to implement that is responsible of drawing the content of the layer. This method is called every time the MapView's state changes, or if [requestRender()](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#requestRender) has been called.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#render)
+     * 
+     * @param renderParameters
+     * @param renderParameters.context The [canvas 2D context](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) in which to draw content.
+     * @param renderParameters.stationary The stationary state of the `MapView`.
+     * @param renderParameters.state The object that describes view state.
+     * 
+     */
+    render(renderParameters: BaseLayerView2DRenderRenderParameters): void;
+    /**
+     * The [LayerView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-layers-LayerView.html) can call this method to ask the MapView to schedule a new rendering frame.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#requestRender)
+     * 
+     * 
+     */
+    protected requestRender(): void;
+    /**
+     * Method to implement, which notifies of tiles being added or removed for the current view state. This function can be implemented to start and stop fetching new data, or allocate and dispose resources.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#tilesChanged)
+     * 
+     * @param added The tile objects added for the current view viewport.
+     * @param removed The tile objects removed from the view viewport.
+     * 
+     */
+    tilesChanged(added: Tile[], removed: Tile[]): void;
+  }
+
+
+  export interface BaseLayerView2DRenderRenderParameters extends Object {
+    /**
+     * The [canvas 2D context](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) in which to draw content.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#render)
+     */
+    context: CanvasRenderingContext2D;
+    /**
+     * The stationary state of the `MapView`.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#render)
+     */
+    stationary: boolean;
+    /**
+     * The object that describes view state.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#render)
+     */
+    state: ViewState;
+  }
+
+  /**
+   * Represents a tile reference.
+   * 
+   * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#Tile)
+   */
+  export interface Tile extends Object {
+    /**
+     * The tile string identifier in the format `level/row/col/world`
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#Tile)
+     */
+    id: string;
+    /**
+     * The level identifier of the [LOD](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LOD.html) to which the tile belongs
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#Tile)
+     */
+    level: number;
+    /**
+     * The row identifier.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#Tile)
+     */
+    row: number;
+    /**
+     * The column identifier.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#Tile)
+     */
+    col: number;
+    /**
+     * When the projection allows world wrapping (e.g. Web Mercator), identifies the instance of the world this tile's `level`/`row`/`col`.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#Tile)
+     */
+    world: number;
+    /**
+     * The number of map units per pixel in the tile.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#Tile)
+     */
+    resolution: number;
+    /**
+     * The map scale at the tile's level.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#Tile)
+     */
+    scale: number;
+    /**
+     * The coordinates of the top-left corner of the tile as an array of two numbers. The coordinates are in un-normalized map units.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#Tile)
+     */
+    coords: number[];
+    /**
+     * The bounds of the tile as an array of four numbers that be readily converted to an [Extent](https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-Extent.html) object.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-layers-BaseLayerView2D.html#Tile)
+     */
+    bounds: number[];
+  }
+
+  interface ViewState {
+    /**
+     * Represents the view's center point as an array of two numbers `[x, y]`.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#center)
+     */
+    readonly center: number[];
+    /**
+     * The extent represents the visible portion of a map within the view as an instance of Extent.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#extent)
+     */
+    readonly extent: Extent;
+    /**
+     * Represents the size of one pixel in map units. The value of `resolution` is the result of the division of the [extent](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#extent) width by the [size](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#size).
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#resolution)
+     */
+    readonly resolution: number;
+    /**
+     * The clockwise rotation of due north in relation to the top of the view in degrees.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#rotation)
+     */
+    readonly rotation: number;
+    /**
+     * Represents the map scale at the center of the view.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#scale)
+     */
+    readonly scale: number;
+    /**
+     * Represents the width and height of the view in pixels, e.g. `[width, height]`.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#size)
+     */
+    readonly size: number[];
+
+    /**
+     * Creates a deep clone of ViewState object.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#clone)
+     * 
+     * 
+     */
+    clone(): ViewState;
+    /**
+     * Copies the properties from a given view state.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#copy)
+     * 
+     * @param state The view state to copy the properties from.
+     * 
+     */
+    copy(state: ViewState): ViewState;
+    /**
+     * Converts the x and y screen coordinates to map coordinates.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#toMap)
+     * 
+     * @param out The receiving array of the conversion.
+     * @param x The horizontal screen coordinate to convert.
+     * @param y The vertical screen coordinate to convert.
+     * 
+     */
+    toMap(out: number[], x: number, y: number): number[];
+    /**
+     * Converts the x and y map coordinates to screen coordinates.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#toScreen)
+     * 
+     * @param out The receiving array of the conversion.
+     * @param x The horizontal screen coordinate to convert.
+     * @param y The vertical screen coordinate to convert.
+     * 
+     */
+    toScreen(out: number[], x: number, y: number): number[];
+    /**
+     * Converts the x and y map coordinates to screen coordinates. This method is similar to [toScreen](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#toScreen), without applying the view state rotation.
+     * 
+     * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-2d-ViewState.html#toScreenNoRotation)
+     * 
+     * @param out The receiving array of the conversion.
+     * @param x The horizontal screen coordinate to convert.
+     * @param y The vertical screen coordinate to convert.
+     * 
+     */
+    toScreenNoRotation(out: number[], x: number, y: number): number[];
+  }
+
+  interface ViewStateConstructor {
+
+
+
+    new(properties?: any): ViewState;
+  }
+
+  export const ViewState: ViewStateConstructor;
+
   /**
    * map/scene on screen. The ArcGIS API for JavaScript offers a low-level interface to access the SceneView's WebGL context, and thus enables creating custom visualizations that interact with the scene the same way as built-in layers. Developers can either write WebGL code directly, or integrate with third-party WebGL libraries.
    * 
@@ -41152,6 +41523,20 @@ declare namespace __esri {
      * 
      * // Disable automatic lighting updates by camera tracking
      * view.environment.lighting.cameraTrackingEnabled = true;
+     * 
+     * // Set a background color
+     * const view = new SceneView({
+     *   container: "view",
+     *   map: map,
+     *   environment: {
+     *     background: {
+     *       type: "color",
+     *       color: [255, 252, 244, 1]
+     *     },
+     *     starsEnabled: false,
+     *     atmosphereEnabled: false
+     *   }
+     * });
      * ```
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#environment)
@@ -41449,6 +41834,20 @@ declare namespace __esri {
      * 
      * // Disable automatic lighting updates by camera tracking
      * view.environment.lighting.cameraTrackingEnabled = true;
+     * 
+     * // Set a background color
+     * const view = new SceneView({
+     *   container: "view",
+     *   map: map,
+     *   environment: {
+     *     background: {
+     *       type: "color",
+     *       color: [255, 252, 244, 1]
+     *     },
+     *     starsEnabled: false,
+     *     atmosphereEnabled: false
+     *   }
+     * });
      * ```
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#environment)
@@ -42036,7 +42435,7 @@ declare namespace __esri {
 
   export interface SceneViewEnvironmentProperties extends Object {
     /**
-     * Specifies how the background of the scene (which lies behind sky, stars and atmosphere) should be displayed. By default this is simply a single, fully opaque, black color.
+     * Specifies how the background of the scene (which lies behind sky, stars and atmosphere) should be displayed. By default this is simply a single, fully opaque, black color. Currently [ColorBackground](https://developers.arcgis.com/javascript/latest/api-reference/esri-webscene-background-ColorBackground.html) is the only type of background supported.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#environment)
      */
@@ -42071,7 +42470,7 @@ declare namespace __esri {
 
   export interface SceneViewEnvironment extends AnonymousAccessor {
     /**
-     * Specifies how the background of the scene (which lies behind sky, stars and atmosphere) should be displayed. By default this is simply a single, fully opaque, black color.
+     * Specifies how the background of the scene (which lies behind sky, stars and atmosphere) should be displayed. By default this is simply a single, fully opaque, black color. Currently [ColorBackground](https://developers.arcgis.com/javascript/latest/api-reference/esri-webscene-background-ColorBackground.html) is the only type of background supported.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#environment)
      */
@@ -42150,7 +42549,7 @@ declare namespace __esri {
      */
     date?: DateProperties;
     /**
-     * Indicates whether to show shadows cast by the sun
+     * Indicates whether to show shadows cast by the sun. Shadows are only displayed for real world 3D objects. Terrain doesn't cast shadows. In local scenes at small zoom levels, shadows are not displayed.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#environment)
      * 
@@ -42185,7 +42584,7 @@ declare namespace __esri {
      */
     date?: Date;
     /**
-     * Indicates whether to show shadows cast by the sun
+     * Indicates whether to show shadows cast by the sun. Shadows are only displayed for real world 3D objects. Terrain doesn't cast shadows. In local scenes at small zoom levels, shadows are not displayed.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#environment)
      * 
@@ -43785,7 +44184,7 @@ declare namespace __esri {
      */
     date: Date;
     /**
-     * The type of direct shadows.
+     * Indicates whether to show shadows cast by the sun. Shadows are only displayed for real world 3D objects. Terrain doesn't cast shadows. In local scenes at small zoom levels, shadows are not displayed.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-webscene-Lighting.html#directShadowsEnabled)
      * 
@@ -43829,7 +44228,7 @@ declare namespace __esri {
      */
     date?: DateProperties;
     /**
-     * The type of direct shadows.
+     * Indicates whether to show shadows cast by the sun. Shadows are only displayed for real world 3D objects. Terrain doesn't cast shadows. In local scenes at small zoom levels, shadows are not displayed.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-webscene-Lighting.html#directShadowsEnabled)
      * 
@@ -48909,7 +49308,8 @@ declare namespace __esri {
      */
     features: Graphic[];
     /**
-     * Highlight the selected popup feature using the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#highlightOptions) set on the [SceneView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Currently highlight only works in 3D.
+     * Highlight the selected popup feature using the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#highlightOptions) set on the [MapView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) or the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#highlightOptions) set on the [SceneView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). 
+     * > **Known Limitation**  Only [FeatureLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) rendered with [WebGL](esri-layers-FeatureLayer.html#webgl-rendering) support highlight.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Popup.html#highlightEnabled)
      * 
@@ -49147,7 +49547,8 @@ declare namespace __esri {
      */
     features?: GraphicProperties[];
     /**
-     * Highlight the selected popup feature using the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#highlightOptions) set on the [SceneView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Currently highlight only works in 3D.
+     * Highlight the selected popup feature using the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#highlightOptions) set on the [MapView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) or the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#highlightOptions) set on the [SceneView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). 
+     * > **Known Limitation**  Only [FeatureLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) rendered with [WebGL](esri-layers-FeatureLayer.html#webgl-rendering) support highlight.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Popup.html#highlightEnabled)
      * 
@@ -49246,7 +49647,8 @@ declare namespace __esri {
      */
     features: Graphic[];
     /**
-     * Highlight the selected popup feature using the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#highlightOptions) set on the [SceneView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Currently highlight only works in 3D.
+     * Highlight the selected popup feature using the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#highlightOptions) set on the [MapView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) or the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#highlightOptions) set on the [SceneView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). 
+     * > **Known Limitation**  Only [FeatureLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) rendered with [WebGL](esri-layers-FeatureLayer.html#webgl-rendering) support highlight.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Popup-PopupViewModel.html#highlightEnabled)
      * 
@@ -49398,7 +49800,8 @@ declare namespace __esri {
      */
     features?: GraphicProperties[];
     /**
-     * Highlight the selected popup feature using the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#highlightOptions) set on the [SceneView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). Currently highlight only works in 3D.
+     * Highlight the selected popup feature using the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#highlightOptions) set on the [MapView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html) or the [highlightOptions](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#highlightOptions) set on the [SceneView](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html). 
+     * > **Known Limitation**  Only [FeatureLayers](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) rendered with [WebGL](esri-layers-FeatureLayer.html#webgl-rendering) support highlight.
      * 
      * [Read more...](https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Popup-PopupViewModel.html#highlightEnabled)
      * 
@@ -54616,6 +55019,11 @@ declare module "esri/views/ui/DefaultUI" {
   export = DefaultUI;
 }
 
+declare module "esri/views/2d/ViewState" {
+  import ViewState = __esri.ViewState;
+  export = ViewState;
+}
+
 declare module "esri/views/2d/draw/Draw" {
   import Draw = __esri.Draw;
   export = Draw;
@@ -54649,6 +55057,11 @@ declare module "esri/views/2d/draw/MultipointDrawAction" {
 declare module "esri/views/2d/draw/SegmentDrawAction" {
   import SegmentDrawAction = __esri.SegmentDrawAction;
   export = SegmentDrawAction;
+}
+
+declare module "esri/views/2d/layers/BaseLayerView2D" {
+  import BaseLayerView2D = __esri.BaseLayerView2D;
+  export = BaseLayerView2D;
 }
 
 declare module "esri/webmap/InitialViewProperties" {

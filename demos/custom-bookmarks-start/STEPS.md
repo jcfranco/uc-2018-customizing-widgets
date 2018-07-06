@@ -139,9 +139,7 @@ Please refer to the following for more information:
     private _playingBookmarks: HashMap<boolean> = {};
     ```
 
-    **Note:** We have now updated the widget to play a sound effect whenever a bookmark is clicked and the bookmark is also marked as active during the sound effect playback. Let's add some visual flair to the demo.
-
-1.  Let's call this method when a bookmark is clicked in `_goToBookmark`.
+    Let's call this method when a bookmark is clicked in `_goToBookmark`.
 
     ```tsx
     @accessibleHandler()
@@ -156,7 +154,10 @@ Please refer to the following for more information:
 
     _Demo Time_
 
-1.  For our purposes, we want to always show an icon, so let's simplify `_renderBookmark` by removing the code to render bookmark thumbnails.
+    We have now updated the widget to play a sound effect whenever a bookmark is clicked and the bookmark is also marked as active during the sound effect playback. We can use this to add some visual flair to our demo.
+
+1.  Before proceeding, let's simplify `_renderBookmark` by removing the code to render bookmark thumbnails since we won't use that.
+
 
     ```tsx
     // thumbnail-less `_renderBookmark`

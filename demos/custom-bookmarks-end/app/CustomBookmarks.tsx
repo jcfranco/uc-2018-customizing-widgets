@@ -87,14 +87,18 @@ class CustomBookmarks extends declared(Bookmarks) {
   private _play(bookmark: Bookmark): void {
     const sfx = new Audio(require.toUrl("./assets/pipe.wav"));
 
+    // mark bookmark as having active sound
     this._playingBookmarks[bookmark.name] = true;
 
-    sfx.play().then(() => {
-      sfx.addEventListener("ended", () => {
-        this._playingBookmarks[bookmark.name] = false;
-        this.scheduleRender();
-      });
+    // when audio ends, mark bookmark as not having active sound
+    sfx.addEventListener("ended", () => {
+      this._playingBookmarks[bookmark.name] = false;
+
+      // ensure rendering after updating bookmark status
+      this.scheduleRender();
     });
+
+    sfx.play();
   }
 }
 

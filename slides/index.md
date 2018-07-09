@@ -158,19 +158,9 @@
 
 ---
 
-<h3 style="font-family:monospace;text-transform:uppercase;">Previously on API Theming</h3>
-<span style="font-family:monospace;text-transform:uppercase;">Life was hard.</span> <!-- .element: class="fragment" data-fragment-index="1" -->
+# Working with API themes.
 
----
-
-Before, you needed to
-
-1.  Pull down the API <a href="https://github.com/Esri/arcgis-js-api/tree/4master">(arcgis-js-api)</a>.
-1.  Create a theme directory in the right place.
-1.  Create a Sass file.
-1.  Import the core file.
-1.  Run the compiler.
-1.  Wonder if there were an easier way. <!-- .element: class="fragment" data-fragment-index="1" -->
+You could pull down the API, but...
 
 ---
 
@@ -205,9 +195,9 @@ Clone the repo.<br/>
 <code class="code--bg">npm install</code>
 
   - Installs the necessary bits.
-  - Creates a sample theme directory.
-  - Compiles CSS from any Sass theme directory.
-  - Spins up a preview in your default browser.
+  - Creates a starter theme.
+  - Compiles the CSS.
+  - Spins up a preview.
 
 <img src="img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/>
 
@@ -226,6 +216,10 @@ Clone the repo.<br/>
 Let's have a look!
 
 <img src="img/8bit/JSAPI-8bit_Magic.png" style="margin: 0;"/>
+
+---
+
+After cloning the repo, there's not much there.
 
 ---
 

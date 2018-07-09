@@ -88,7 +88,7 @@
 
 ---
 
-## Is this CSS or Sass?
+## Is this Sass or CSS?
 
 ```
   .esri-widget {
@@ -121,9 +121,7 @@
 
 ## So how is Sass better?
 
-<p class="fragment">Variables.<br/><small>There is a lot more, but this is a good start.</small></p>
-
-<p class="fragment">Let's have a look at `background-color`.</p>
+<p class="fragment">Variables<br/><small>is a good place to start.</small></p>
 
 ---
 
@@ -158,7 +156,7 @@
 
 ---
 
-# Working with API themes.
+# Theming Widgets
 
 You could pull down the API, but...
 
@@ -219,14 +217,9 @@ Let's have a look!
 
 ---
 
-After cloning the repo, there's not much there.
-
----
-
 # Theme Smart
 
-Avoid adding additional CSS selectors.<br/>
-Instead, use Sass to your advantage.<br/>
+Use Sass to your advantage.<br/>
 <span>Let's look at how the core theme is structured.</span><!-- .element: class="fragment" data-fragment-index="1" -->
 
 ---
@@ -252,7 +245,7 @@ Any value assignment overrides the `!default` value.
 
 ```
 // Inside sass/my-theme/main.scss
-$background_color : #cc4b09;
+$background_color : #f53a1c;
 ```
 
 ---
@@ -266,11 +259,11 @@ $background_color : #cc4b09;
 # Level I: Theming Recap
 
 - Use the utility for easy theming. <!-- .element: class="fragment" data-fragment-index="1" -->
-- Theme structure <!-- .element: class="fragment" data-fragment-index="2" -->
-  - Color <!-- .element: class="fragment" data-fragment-index="2" -->
-  - Size <!-- .element: class="fragment" data-fragment-index="2" -->
-  - Typography <!-- .element: class="fragment" data-fragment-index="2" -->
-- Use the core and override values. <!-- .element: class="fragment" data-fragment-index="3" -->
+- Avoid using CSS selectors. <!-- .element: class="fragment" data-fragment-index="2" -->
+- Theme structure <!-- .element: class="fragment" data-fragment-index="3" -->
+  - Color <!-- .element: class="fragment" data-fragment-index="3" -->
+  - Size <!-- .element: class="fragment" data-fragment-index="3" -->
+  - Typography <!-- .element: class="fragment" data-fragment-index="3" -->
 
 ---
 

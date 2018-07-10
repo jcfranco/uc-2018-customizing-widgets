@@ -174,14 +174,18 @@ body {
 
 .reveal code {
   font-family: monospace;
-  text-transform: none; }
+  text-transform: none;
+  color: orange;
+}
 
 .reveal pre code {
   display: block;
   padding: 5px;
   overflow: auto;
   max-height: 400px;
-  word-wrap: normal; }
+  color: #fff;
+  word-wrap: normal;
+}
 
 .reveal table {
   margin: auto;

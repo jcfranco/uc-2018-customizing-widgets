@@ -47,6 +47,10 @@ Add widget to view.ui
 view.ui.add(locate, "top-left");
 ```
 
+Now we can get to customizing a widget.
+
+Lets customize the Locate Widget.
+
 ## Copy `Locate.tsx`
 
 Copy existing [Locate.tsx](Locate.tsx.txt) and paste into [MarioLocate.tsx](../mario-locate-start/app/MarioLocate.tsx).

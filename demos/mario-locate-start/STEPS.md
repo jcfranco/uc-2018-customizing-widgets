@@ -1,6 +1,53 @@
-# `MarioLocate` Widget: View Steps
+# `MarioLocate` Widget Steps
 
-## Step 1: Copy `Locate.tsx`
+## Dojo Configuration
+
+Setup Dojo Config for custom package.
+
+```html
+<script>
+  var href = location.href;
+  var demoLocation = href.slice(0, href.lastIndexOf("/"));
+  var dojoConfig = {
+    async: true,
+    //locale: "es",
+    packages: [{
+      name: "demo",
+      location: demoLocation + "/app"
+    }]
+  };
+
+</script>
+```
+
+## Import our Widget
+
+Require our `MarioLocate` widget.
+
+```js
+"demo/MarioLocate",
+```
+
+## Initialize Widget
+
+Initialize `MarioLocate`
+
+```js
+locate = new MarioLocate({
+  view: view,
+  scale: 70000
+});
+```
+
+## Add widget to DOM
+
+Add widget to view.ui
+
+```js
+view.ui.add(locate, "top-left");
+```
+
+## Copy `Locate.tsx`
 
 Copy existing [Locate.tsx](Locate.tsx.txt) and paste into [MarioLocate.tsx](../mario-locate-start/app/MarioLocate.tsx).
 
@@ -15,7 +62,7 @@ class MarioLocate extends declared(Widget) {
 export = MarioLocate;
 ```
 
-## Step 2: Modify the `render()` method
+## Modify the `render()` method
 
 Replace render method to return simple `div`
 
@@ -25,7 +72,7 @@ Replace render method to return simple `div`
 }
 ```
 
-## Step 3: Build new `render()` method
+## Build new `render()` method
 
 ```ts
 const { state } = this.viewModel;
@@ -65,7 +112,7 @@ return (
 );
 ```
 
-## Step 4: Use custom graphic by default
+## Use custom graphic by default
 
 Modify locate graphic to match map.
 
@@ -96,7 +143,7 @@ this.viewModel.graphic = new Graphic({
 });
 ```
 
-## Step 5: Play SFX
+## Play SFX
 
 Play audio!
 

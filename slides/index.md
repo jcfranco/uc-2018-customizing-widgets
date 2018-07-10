@@ -25,7 +25,7 @@
   - Changing styles: colors, sizing, font, etc.
 - Altering presentation of a widget
   - Custom UI
-- Implementing widget in a different framework
+- Adding additional functionality
 
 ---
 
@@ -310,8 +310,8 @@ interface LocateViewModel {
 
 Lets create a custom widget view.
 
-- [Demo Steps](../demos/mario-locate-steps/1.html.md)
 - [Demo Complete](../demos/mario-locate-complete/)
+- [Demo Steps](../demos/mario-locate-start/STEPS.md)
 - [Demo Start](../demos/mario-locate-start/)
 
 [![Level 2 demo](img/level2demo.png)](../demos/mario-locate-complete/)
